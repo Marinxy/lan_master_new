@@ -1,6 +1,7 @@
 <?php
 require_once 'user_auth.php';
 require_once 'functions.php';
+require_once 'game_voting.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -166,12 +167,18 @@ $gameCount = getGameCount();
             </div>
 		</div>
 		<div class='headermenu'>
-			<a href='#'>ADD GAME</a> - <a href='#'>ABOUT</a> - <a href='#'>CONTACT</a>
+			<a href='events.php'>LAN EVENTS</a> - <a href='game_stats.php'>VOTE STATS</a> - <a href='#'>ADD GAME</a> - <a href='#'>ABOUT</a> - <a href='#'>CONTACT</a>
 		</div>
 		<div class='header-stats'>
 			<h1>LAN Game List</h1>
 			<div class='game-count'>
-				<span class='ticker'><?php echo substr($gameCount, 0, 1); ?></span><span class='ticker'><?php echo substr($gameCount, 1, 1); ?></span><span class='ticker'><?php echo substr($gameCount, 2, 1); ?></span>&nbsp;games in database
+				<?php 
+				$gameCountStr = str_pad($gameCount, 3, '0', STR_PAD_LEFT);
+				for ($i = 0; $i < strlen($gameCountStr); $i++) {
+					echo '<span class="ticker">' . $gameCountStr[$i] . '</span>';
+				}
+				?>
+				&nbsp;games in database
 			</div>
 		</div>
 		
@@ -243,6 +250,7 @@ $gameCount = getGameCount();
 			<th class='online'>Online</th>
 			<th class='offline'>Offline</th>
 			<th class='link'>Price</th>
+			<th class='vote'>Vote</th>
 			<?php if ($currentUser && isAdmin($currentUser['id'])): ?><th class='link'>Actions</th><?php endif; ?>
 		</tr>
 <?php foreach ($games as $game): ?>
@@ -256,11 +264,28 @@ $gameCount = getGameCount();
 	<td><?php echo $game['online'] ? 'Yes' : 'No'; ?></td>
 	<td><?php echo $game['offline'] ? 'Yes' : 'No'; ?></td>
 	<td class='right'><?php if ($game['price']): ?><a href="<?php echo h($game['price_url'] ?? '#'); ?>"><?php echo h($game['price']); ?></a><?php endif; ?></td>
+	<td class='vote-cell' style='text-align: center;'>
+		<?php if ($currentUser): ?>
+			<?php 
+				$userVote = getUserVoteForGame($currentUser['id'], $game['id']);
+				$hasVoted = $userVote !== false;
+				$voteCount = $game['vote_count'] ?? 0;
+			?>
+			<button class="vote-btn <?php echo $hasVoted ? 'voted' : ''; ?>" 
+					onclick="voteForGame(<?php echo $game['id']; ?>, this)" 
+					data-game-id="<?php echo $game['id']; ?>"
+					style="background: <?php echo $hasVoted ? '#28a745' : '#6c757d'; ?>; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+				👍 <span class="vote-count"><?php echo $voteCount; ?></span>
+			</button>
+		<?php else: ?>
+			<span style="color: #6c757d;">👍 <?php echo $game['vote_count'] ?? 0; ?></span>
+		<?php endif; ?>
+	</td>
 	<?php if ($currentUser && isAdmin($currentUser['id'])): ?><td class='right'><button onclick="toggleEditForm(<?php echo $game['id']; ?>)" style="background: #007cba; color: white; border: none; padding: 3px 8px; border-radius: 3px; cursor: pointer;">Edit</button></td><?php endif; ?>
 </tr>
 <?php if ($currentUser && isAdmin($currentUser['id'])): ?>
 <tr id="edit-form-<?php echo $game['id']; ?>" style="display: none; background: #f9f9f9;" class="edit-form">
-	<td colspan="<?php echo isset($currentUser) && isAdmin($currentUser['id']) ? '10' : '9'; ?>" style="padding: 20px;">
+	<td colspan="<?php echo isset($currentUser) && isAdmin($currentUser['id']) ? '11' : '10'; ?>" style="padding: 20px;">
 		<div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
 			<h3 style="margin-top: 0; color: #333;">Edit Game: <?php echo h($game['title']); ?></h3>
 
@@ -351,7 +376,7 @@ $gameCount = getGameCount();
 
 <!-- Game Details Dropdown -->
 <tr id="game-details-<?php echo $game['id']; ?>" style="display: none; background: #f0f8ff;" class="game-details">
-	<td colspan="<?php echo isset($currentUser) && isAdmin($currentUser['id']) ? '10' : '9'; ?>" style="padding: 20px;">
+	<td colspan="<?php echo isset($currentUser) && isAdmin($currentUser['id']) ? '11' : '10'; ?>" style="padding: 20px;">
 		<div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
 			<div style="display: flex; gap: 20px;">
 				<!-- Game Image -->
@@ -1317,6 +1342,44 @@ document.getElementById('igdb-search-input').addEventListener('input', function(
         }
     }, 500);
 });
+
+// Game voting function
+async function voteForGame(gameId, buttonElement) {
+    try {
+        const formData = new FormData();
+        formData.append('action', 'vote');
+        formData.append('game_id', gameId);
+        
+        const response = await fetch('game_voting.php', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            const voteCountSpan = buttonElement.querySelector('.vote-count');
+            voteCountSpan.textContent = data.vote_count;
+            
+            if (data.action === 'added') {
+                buttonElement.style.background = '#28a745';
+                buttonElement.classList.add('voted');
+            } else {
+                buttonElement.style.background = '#6c757d';
+                buttonElement.classList.remove('voted');
+            }
+        } else {
+            alert('Error: ' + data.message);
+        }
+    } catch (error) {
+        console.error('Error voting:', error);
+        alert('Error voting for game. Please try again.');
+    }
+}
 </script>
 
 </body></html>

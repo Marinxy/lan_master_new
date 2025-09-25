@@ -39,6 +39,15 @@ A comprehensive, database-driven LAN game tracking and planning system with 521 
 - **Password Security** - Modern password hashing (PHP 8.3+)
 - **Profile Management** - User account information and settings
 
+### 🗳️ **Game Voting System**
+- **Thumbs Up Voting** - Users can vote for their favorite games
+- **Vote Toggling** - Click to vote, click again to remove vote
+- **Real-time Updates** - Vote counts update instantly via AJAX
+- **Vote Statistics** - Track total votes, games with votes, and most popular games
+- **User-specific Voting** - Each user can vote once per game
+- **Database Integration** - Votes stored in dedicated `game_votes` table
+- **Admin Analytics** - Voting statistics and insights for administrators
+
 ### 🛠️ **Admin Features**
 - **Inline Game Management** - Edit and delete games directly on the main page
 - **Comprehensive Editing** - Modify all game properties including title, genre, player limits
@@ -128,6 +137,8 @@ lan_master_new/
 ├── ajax_igdb.php               # IGDB API AJAX endpoint
 ├── igdb_api.php                # IGDB API integration class
 ├── download_image.php          # IGDB thumbnail download handler
+├── game_voting.php             # Game voting system and AJAX handlers
+├── setup_game_voting.php       # Voting system database setup
 ├── user_auth.php                # Authentication system & admin functions
 ├── functions.php                # Database and utility functions
 ├── csv_import_system.php        # CSV import functionality
@@ -156,8 +167,11 @@ lan_master_new/
 ### **For Registered Users**
 1. **Sign Up**: Create account at `/signup.php`
 2. **Login**: Access your account at `/login.php`
-3. **Profile**: View and manage your profile at `/profile.php`
-4. **Logout**: Securely logout via the header menu
+3. **Vote for Games**: Click the thumbs up button next to any game to vote
+4. **Toggle Votes**: Click again to remove your vote
+5. **View Vote Counts**: See real-time vote counts for all games
+6. **Profile**: View and manage your profile at `/profile.php`
+7. **Logout**: Securely logout via the header menu
 
 ### **For Administrators** (First User Only)
 1. **Register**: Create the first account at `/signup.php` (automatically becomes admin)
@@ -258,6 +272,48 @@ CREATE TABLE user_sessions (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 ```
+
+### **Game Votes Table**
+```sql
+CREATE TABLE game_votes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    game_id INTEGER NOT NULL,
+    vote_type ENUM('thumbs_up') DEFAULT 'thumbs_up',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_user_game_vote (user_id, game_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE,
+    INDEX idx_game_votes_game_id (game_id),
+    INDEX idx_game_votes_user_id (user_id),
+    INDEX idx_game_votes_created_at (created_at)
+);
+```
+
+**Note**: The `games` table also includes a `vote_count` column that is automatically updated when votes are added or removed.
+
+## 🔧 Recent Fixes & Improvements
+
+### **Form Submission Fix (Latest)**
+- **Issue Resolved**: Fixed interference between voting system and admin form submissions
+- **Root Cause**: POST handler in `game_voting.php` was intercepting all form submissions
+- **Solution**: Modified POST handler to only process voting actions (`action=vote`)
+- **Impact**: Admin game editing forms now work correctly without JSON response errors
+- **Technical Details**: Prevented `game_voting.php` from setting JSON headers for non-voting requests
+
+### **Voting System Enhancements**
+- **Real-time AJAX Voting**: Instant vote updates without page refresh
+- **Vote Toggle Functionality**: Users can add/remove votes with single click
+- **Database Optimization**: Efficient vote counting with automatic `vote_count` updates
+- **User Experience**: Visual feedback for voting actions
+- **Security**: Proper authentication checks for voting operations
+
+### **Code Quality Improvements**
+- **Separation of Concerns**: Voting logic isolated from main application logic
+- **Error Handling**: Comprehensive error handling for voting operations
+- **Performance**: Optimized database queries for vote counting
+- **Maintainability**: Clean, modular code structure for voting system
 
 ## 🚀 Caching System
 

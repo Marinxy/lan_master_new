@@ -152,6 +152,12 @@ class LanMaster {
         // Form submission validation
         document.querySelectorAll('form').forEach(form => {
             form.addEventListener('submit', (e) => {
+                // Skip validation for game update/delete forms to prevent interference
+                const action = form.querySelector('input[name="action"]')?.value;
+                if (action === 'update_game' || action === 'delete_game') {
+                    return; // Allow normal form submission
+                }
+                
                 if (!this.validateForm(form)) {
                     e.preventDefault();
                     this.showMessage('Please fix the errors below before submitting.', 'error');
