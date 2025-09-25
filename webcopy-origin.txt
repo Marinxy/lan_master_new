@@ -1,0 +1,680 @@
+Uri: http://ecx.images-amazon.com/images/I/81mm5lhEtfL.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\images\I\81mm5lhEtfL.jpg
+Content Type: image/jpeg
+
+Uri: https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
+File Name: C:\Downloaded Web Sites\www.langamelist.com\ajax\libs\jquery\1.11.3\jquery.min.js
+Content Type: text/javascript
+
+Uri: https://www.google.com/recaptcha/api.js
+File Name: C:\Downloaded Web Sites\www.langamelist.com\recaptcha\api.js
+Content Type: text/javascript
+
+Uri: https://www.langamelist.com/
+File Name: C:\Downloaded Web Sites\www.langamelist.com\index.htm
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/act-of-aggression-reboot-edition
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\act-of-aggression-reboot-edition.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/age-of-empires-ii-hd
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\age-of-empires-ii-hd.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/alien-swarm-reactive-drop
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\alien-swarm-reactive-drop.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/aliens-versus-predator-2
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\aliens-versus-predator-2.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/ark-survival-evolved
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\ark-survival-evolved.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/arma-2
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\arma-2.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/arma-3
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\arma-3.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/arma-armed-assault
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\arma-armed-assault.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/armagetron-advanced
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\armagetron-advanced.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/at-a-distance
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\at-a-distance.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/atari-deer-hunter-2005
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\atari-deer-hunter-2005.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/atomic-bomberman
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\atomic-bomberman.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/blazerush
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\blazerush.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/block-n-load
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\block-n-load.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/blockland
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\blockland.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/bloody-good-time
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\bloody-good-time.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/blur
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\blur.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/bontago
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\bontago.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/borderlands
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\borderlands.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/borderlands-2
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\borderlands-2.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/burnout-paradise-the-ultimate-box
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\burnout-paradise-the-ultimate-box.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/chivalry-medieval-warfare
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\chivalry-medieval-warfare.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/clonk-rage
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\clonk-rage.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/code-of-war
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\code-of-war.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/codename-eagle
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\codename-eagle.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/colin-mcrae-rally-2005
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\colin-mcrae-rally-2005.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/command-and-conquer-3-tiberium-wars
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\command-and-conquer-3-tiberium-wars.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/command-and-conquer-generals
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\command-and-conquer-generals.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/command-and-conquer-red-alert-3
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\command-and-conquer-red-alert-3.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/command-and-conquer-tiberian-sun
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\command-and-conquer-tiberian-sun.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/counter-strike-global-offensive
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\counter-strike-global-offensive.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/daikatana
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\daikatana.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/dead-island
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\dead-island.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/demigod
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\demigod.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/descent
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\descent.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/descent-3
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\descent-3.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/descent-ii
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\descent-ii.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/desolate
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\desolate.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/dins-curse
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\dins-curse.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/doom-2016
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\doom-2016.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/e-racer
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\e-racer.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/e.y.e.-divine-cybermancy
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\e.y.e.-divine-cybermancy.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/emergency-4-global-fighters-for-life
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\emergency-4-global-fighters-for-life.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/emperor-battle-for-dune
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\emperor-battle-for-dune.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/fear-combat
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\fear-combat.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/feel-the-snow
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\feel-the-snow.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/fifa-08
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\fifa-08.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/forts
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\forts.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/freeciv
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\freeciv.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/freedom-force
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\freedom-force.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/galcon-2-galactic-conquest
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\galcon-2-galactic-conquest.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/game-stock-car-extreme
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\game-stock-car-extreme.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/gang-beasts
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\gang-beasts.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/gimbal
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\gimbal.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/goldeneye-source
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\goldeneye-source.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/golf-with-your-friends
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\golf-with-your-friends.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/grand-theft-auto-iv
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\grand-theft-auto-iv.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/halo-combat-evolved
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\halo-combat-evolved.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/hammerwatch
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\hammerwatch.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/hawken
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\hawken.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/hedgewars
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\hedgewars.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/helldivers
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\helldivers.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/left-4-dead
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\left-4-dead.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/left-4-dead-2
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\left-4-dead-2.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/magic-2014-duels-of-the-planeswalkers
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\magic-2014-duels-of-the-planeswalkers.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/magic-2015-duels-of-the-planeswalkers
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\magic-2015-duels-of-the-planeswalkers.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/mechwarrior-living-legends
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\mechwarrior-living-legends.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/mechwarrior-online
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\mechwarrior-online.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/might-and-magic-heroes-vi
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\might-and-magic-heroes-vi.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/minecraft
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\minecraft.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/minetest
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\minetest.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/mobile-forces
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\mobile-forces.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/nascar-racing-2003-season
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\nascar-racing-2003-season.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/nascar-thunder-2004
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\nascar-thunder-2004.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/natural-selection
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\natural-selection.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/nerf-arena-blast
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\nerf-arena-blast.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/neverwinter-nights
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\neverwinter-nights.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/open-transport-tycoon-deluxe
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\open-transport-tycoon-deluxe.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/openra
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\openra.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/openspades
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\openspades.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/outgun
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\outgun.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/outlaws
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\outlaws.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/path-of-exile
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\path-of-exile.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/path-of-exile-2013
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\path-of-exile-2013.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/pax-imperia-eminent-domain
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\pax-imperia-eminent-domain.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/payday-2
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\payday-2.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/plain-sight
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\plain-sight.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/project-zomboid
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\project-zomboid.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/pulsar-lost-colony
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\pulsar-lost-colony.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/realm-of-the-mad-god
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\realm-of-the-mad-god.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/red-eclipse
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\red-eclipse.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/red-faction
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\red-faction.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/red-faction-guerrilla
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\red-faction-guerrilla.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/renegade-x
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\renegade-x.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/resident-evil-5
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\resident-evil-5.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/return-to-castle-wolfenstein
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\return-to-castle-wolfenstein.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/rise-of-flight
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\rise-of-flight.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/rise-of-nations
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\rise-of-nations.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/sacred-2-gold
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\sacred-2-gold.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/screencheat
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\screencheat.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/serious-sam-3-bfe
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\serious-sam-3-bfe.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/smokin-guns-2009
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\smokin-guns-2009.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/split-second
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\split-second.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/split-second-2010
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\split-second-2010.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/starcraft-ii-heart-of-the-swarm
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\starcraft-ii-heart-of-the-swarm.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/starcraft-ii-wings-of-liberty
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\starcraft-ii-wings-of-liberty.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/system-shock-2
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\system-shock-2.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/tabletop-simulator
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\tabletop-simulator.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/terraria
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\terraria.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/the-battle-for-wesnoth
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\the-battle-for-wesnoth.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/the-forest
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\the-forest.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/the-guild-2
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\the-guild-2.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/the-hidden-source
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\the-hidden-source.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/the-lord-of-the-rings-the-battle-for-middle-earth-ii
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\the-lord-of-the-rings-the-battle-for-middle-earth-ii.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/the-mean-greens-plastic-warfare
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\the-mean-greens-plastic-warfare.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/the-red-solstice
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\the-red-solstice.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/the-settlers-2-1996
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\the-settlers-2-1996.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/the-ship-murder-party
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\the-ship-murder-party.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/torchlight-2
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\torchlight-2.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/tribes-ascend
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\tribes-ascend.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/unreal
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\unreal.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/unreal-tournament
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\unreal-tournament.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/unreal-tournament-2004
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\unreal-tournament-2004.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/unreal-tournament-2015
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\unreal-tournament-2015.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/unreal-tournament-3
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\unreal-tournament-3.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/warcraft-ii-battle.net-edition
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\warcraft-ii-battle.net-edition.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/warzone-2100
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\warzone-2100.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/widelands
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\widelands.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/windward
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\windward.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/witch-it
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\witch-it.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/wolfenstein-enemy-territory
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\wolfenstein-enemy-territory.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/world-in-conflict
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\world-in-conflict.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/worms-armageddon
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\worms-armageddon.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/ysflight
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\ysflight.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/yu-gi-oh-joey-the-passion
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\yu-gi-oh-joey-the-passion.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/zero-gear
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\zero-gear.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/zero-k
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\zero-k.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/zombie-panic-source
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\zombie-panic-source.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/games/zombies-monsters-robots
+File Name: C:\Downloaded Web Sites\www.langamelist.com\games\zombies-monsters-robots.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/img/10.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\10.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/167.png
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\167.png
+Content Type: image/png
+
+Uri: https://www.langamelist.com/img/178.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\178.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/19.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\19.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/258.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\258.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/289.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\289.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/291.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\291.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/292.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\292.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/293.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\293.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/314.png
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\314.png
+Content Type: image/png
+
+Uri: https://www.langamelist.com/img/316.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\316.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/319.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\319.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/327.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\327.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/329.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\329.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/335.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\335.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/40.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\40.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/445.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\445.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/450.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\450.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/61.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\61.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/70.png
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\70.png
+Content Type: image/png
+
+Uri: https://www.langamelist.com/img/79.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\79.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/82.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\82.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/83.jpg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\83.jpg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/img/85.jpeg
+File Name: C:\Downloaded Web Sites\www.langamelist.com\img\85.jpeg
+Content Type: image/jpeg
+
+Uri: https://www.langamelist.com/includes/style.css
+File Name: C:\Downloaded Web Sites\www.langamelist.com\includes\style.css
+Content Type: text/css
+
+Uri: https://www.langamelist.com/login.php
+File Name: C:\Downloaded Web Sites\www.langamelist.com\login.php.html
+Content Type: text/html
+
+Uri: https://www.langamelist.com/logo1.png
+File Name: C:\Downloaded Web Sites\www.langamelist.com\logo1.png
+Content Type: image/png
+

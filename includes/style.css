@@ -1,0 +1,433 @@
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+}
+
+a {
+	color: #f15a24;
+	text-decoration: none;
+}
+
+a.black {
+	color: #000000;
+}
+
+div {
+	margin: 0x; /* change to 1px for debugging */
+	border: 0px solid black; /* change to 1px for debugging */
+}
+
+table, th, td {
+	border: 0px solid red; /* change to 1px for debugging */
+	border-collapse: collapse;
+	border-spacing: 0px;
+	text-align: left;
+	padding-left: 3px;
+	padding-right: 3px;
+	vertical-align: top;
+}
+
+h1 {
+	font-size: 1.3em;
+}
+
+table.menu {
+	margin-bottom: 15px;
+}
+
+table.edit td {
+	vertical-align: middle;
+	padding-bottom: 10px;
+}
+
+/* Formatting of System Requirements tables START */
+
+table.pcgwikitable th, table.pcgwikitable td {
+	font-size: 0.9em;
+	border-bottom: 1px solid lightgrey;
+}
+
+tr.template-infotable-doublehead th {
+	font-weight: bold;
+	text-align: center;
+}
+
+/* Formatting of System Requirements tables END */
+
+col.view_inner_col1 {
+	width: 80px;
+}
+
+col.view_inner_col2 {
+	max-width: 300px;
+}
+
+tr.contact > td {
+	padding-top: 10px;
+}
+
+tr.padding-bottom > td {
+	padding-bottom: 20px;
+}
+
+tr.index:hover {
+	background-color: #f2f2f2;
+}
+
+tr.index td {
+	overflow: hidden;
+}
+
+tr.index td a {
+	display: block;
+	margin: -10em;
+	padding: 10em;
+}
+/*
+th.title {
+	width: 250px;
+	max-width: 250px;
+}
+*/
+th.p_limit {
+	max-width: 42px;
+	text-align: right;
+}
+
+th.p_samepc {
+	max-width: 42px;
+	text-align: right;
+}
+/*
+th.genre {
+	width: 78px;
+	max-width: 78px;
+}
+
+th.subgenre {
+	width: 78px;
+	max-width: 78px;
+}
+
+th.r_year {
+	width: 35px;
+	max-width: 35px;
+}
+
+th.online {
+	width: 28px;
+	max-width: 28px;
+}
+
+th.offline {
+	width: 28px;
+	max-width: 28px;
+}
+
+th.link {
+	width: 35px;
+	max-width: 35px;
+	text-align: right;
+}
+*/
+td.right {
+	text-align: right;
+}
+
+div.body {
+	max-width: 900px;
+	margin: auto;
+}
+
+	div.header {
+		margin-bottom: 10px;
+	}
+
+		div.headermenu {
+			font-size: 1.1em;
+			display: inline-block;
+			height: 20px;
+		}
+
+		div.right {
+			float:right;
+		}
+	
+	div.bannerad { /* centering the bannerad */
+		width: 728px;
+		margin: auto;
+	}
+	
+	div.midsection {
+		margin-top: 15px;
+		overflow: hidden; /* place menu and list next to each other, solution 2*/
+	}
+		div.menu {
+			width: 160px;
+			float: left;
+		}
+
+		div.content {
+			overflow: hidden; /* to ensure floating to the right of the menu */
+		}
+		
+			div.list-outer {
+				clear: left; /* to ensure next list item do not float to the right of the previous image */ 
+				margin-bottom: 20px; /* margin to next list div */
+				overflow: hidden; /* to ensure elements do not expand beneath the div box */
+			}
+
+				div.list-outer > div {
+					float: left;
+				}
+			
+				div.list-photo {
+					width: 160px;
+					height: 160px;
+					border-radius: 10%;
+					overflow: hidden;
+				}
+			
+				div.list-inner {
+					padding-left: 10px; /* distance to the cover photo on the left */
+					width: 500px;
+				}
+
+				div.list-cover-photo {
+					width: 130px;
+					max-height: 150px;
+					overflow: hidden;
+					border-radius: 5%;
+				}
+				
+					.list-cover-photo img {
+						float: left; /* to get rid of the annoying white-space that otherwise appears beneath the image */
+						width: 100%
+					}
+		
+		div.gamedata {
+			display: inline-block;
+			vertical-align: top;
+			max-width: 160px;
+			margin-right: 25px;
+			margin-bottom: 25px;
+		}
+		
+		div.viewimage {
+			text-align: center;
+			margin-bottom: 20px;
+		}
+		
+		div.sysreq {
+			display: inline-block;
+			vertical-align: top;
+			max-width: 700px;
+		}
+		
+		div.error {
+			width: 100%;
+			background-color: #ff9b9b;
+			text-align: center;
+		}
+
+		div.confirm {
+			width: 100%;
+			background-color: LightGreen;
+			text-align: center;
+		}
+
+	div.create_user {
+		max-width: 200px;
+		margin: auto;
+		padding: 0px 10px 0px 10px;
+		margin-top: 20px;
+		border: 1px solid LightGrey;
+	}	
+	
+		div.error2 {
+			text-align: center;
+			padding: 5px;
+			border: 1px solid red;
+			margin-bottom: 10px;
+		}
+		
+	div.footer {
+		text-align: center;
+		clear: both;
+	}
+
+div.inline-block {
+	display: inline-block;
+}
+	
+/* Clear-fix, from here: http://stackoverflow.com/questions/211383/which-method-of-clearfix-is-best */
+div.body:after { 
+  content:"";
+  display:table;
+  clear:both;
+}
+
+p.menusubheader {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+p.subheader {
+	margin-top: 0px;
+	margin-bottom: 10px;
+}
+
+p.menu {
+	width: 150px;
+}
+
+p.feedback {
+	margin: 15px;
+}
+
+p.disclaimer {
+	max-width: 700px;
+	font-size: 0.7em;
+}
+
+textarea.message {
+	resize: none;
+	width: 100%;
+}
+
+textarea.smallmessage {
+	width: 75%;
+}
+
+textarea.listdescription {
+	font-style: italic;
+	color: dimgrey;
+	font-family: Arial, Helvetica, sans-serif;
+	width: 100%;
+}
+
+textarea.listentrycomment {
+	font-style: italic;
+	color: dimgrey;
+	font-family: Arial, Helvetica, sans-serif;
+	width: 100%;
+	font-size: 0.9em;
+}
+
+/* to ensure boxes are same width when defined */
+input, select { 
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
+input[type=text] {
+	padding: 0px;
+	/*border: 1px solid #ccc; No luck */
+}
+
+input.text_small {
+	width: 30px;
+	text-align: right;
+}
+
+input.text_search {
+	width: 146px;
+}
+
+input.create_user {
+	width: 180px;
+	max-width: 180px;
+	
+}
+
+input.h1 {
+	font-weight: bold;
+	font-size: 1.3em;
+	margin-top: 0.67em;
+	margin-bottom: 0.67em;
+	width: 600px;
+}
+
+input.listentrytitle {
+	width: 400px;
+	color: #f15a24;
+}
+
+select.dropdown_by {
+	width: 84px;
+}
+
+select.dropdown_order {
+	width: 60px;
+}
+
+/* ticker formatting code copied from: http://jsfiddle.net/jonigiuro/wJbu7/ */
+span.ticker {
+    box-shadow: 0 0 3px 0 rgba(0,0,0,.5);
+    padding: 3px 5px;
+    margin: 2px;
+    border-radius: 3px;
+	background: #ffffff;
+	background: -moz-linear-gradient(top,  #ffffff 0%, #f3f3f3 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f3f3f3));
+	background: -webkit-linear-gradient(top,  #ffffff 0%,#f3f3f3 100%);
+	background: -o-linear-gradient(top,  #ffffff 0%,#f3f3f3 100%);
+	background: -ms-linear-gradient(top,  #ffffff 0%,#f3f3f3 100%);
+	background: linear-gradient(to bottom,  #ffffff 0%,#f3f3f3 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f3f3f3',GradientType=0 );
+	text-shadow: 0 1px  white;
+}
+
+span.source {
+	font-size: 0.6em;
+}
+
+img.large {
+	max-width:100%;
+	max-height:100%;
+	width: auto;
+	height: auto;
+}
+
+img.list-photo-80x80 { 
+	float: left;
+	width: 80px;
+	height: 80px;
+	object-fit: cover;
+}
+
+img.list-photo-160x80 { 
+	float: left;
+	width: 160px;
+	height: 80px;
+	object-fit: cover;
+}
+
+.float-left {
+	float: left;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.smallertext {
+	font-size: 0.9em;
+}
+
+.smalltext {
+	font-size: 0.8em;
+}
+
+.greytext {
+	color: dimgrey;
+}
+
+.nomargin {
+	margin: 0px;
+}
+
+.italic {
+	font-style: italic;
+}
