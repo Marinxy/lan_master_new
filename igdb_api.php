@@ -240,10 +240,9 @@ class IGDBApi {
             return $cachedResponse;
         }
         
-        // Search for PC games using the recommended approach
+        // Search for games using the recommended approach
         $searchQuery = 'search "' . addslashes($query) . '"; 
-fields name,slug,summary,first_release_date,cover.url,genres.name,game_modes.name,aggregated_rating,aggregated_rating_count,multiplayer_modes.lancoop,multiplayer_modes.offlinecoop,multiplayer_modes.onlinecoop,multiplayer_modes.offlinemax,rating,rating_count; 
-where category = 0; 
+fields name,slug,summary,first_release_date,cover.url,genres.name,game_modes.name,aggregated_rating,aggregated_rating_count,multiplayer_modes.lancoop,multiplayer_modes.offlinecoop,multiplayer_modes.onlinecoop,multiplayer_modes.offlinemax,rating,rating_count,category; 
 limit ' . $limit . ';';
         
         try {
@@ -288,7 +287,7 @@ limit ' . $limit . ';';
             return $cachedResponse;
         }
         
-        $detailQuery = 'fields name,slug,summary,first_release_date,cover.url,genres.name,game_modes.name,multiplayer_modes.onlinecoop,multiplayer_modes.offlinecoop,multiplayer_modes.lancoop,rating,rating_count,websites.url,websites.category; 
+        $detailQuery = 'fields name,slug,summary,first_release_date,cover.url,genres.name,game_modes.name,multiplayer_modes.onlinecoop,multiplayer_modes.offlinecoop,multiplayer_modes.lancoop,rating,rating_count,websites.url,websites.category,category,platforms.name; 
 where id = ' . $igdbId . ';';
         
         try {
@@ -455,12 +454,22 @@ function mapIGDBToGameData($igdbData) {
         return $igdbData;
     }
     
+    // Extract genre from genres array
+    $genre = '';
+    $subgenre = '';
+    if (isset($igdbData['genres']) && is_array($igdbData['genres']) && !empty($igdbData['genres'])) {
+        $genre = $igdbData['genres'][0]; // First genre as main genre
+        $subgenre = count($igdbData['genres']) > 1 ? $igdbData['genres'][1] : ''; // Second genre as subgenre
+    } else {
+        $genre = $igdbData['genre'] ?? '';
+    }
+    
     return [
         'title' => $igdbData['title'] ?? $igdbData['name'] ?? '',
         'slug' => $igdbData['slug'] ?? '',
-        'genre' => $igdbData['genre'] ?? '',
-        'subgenre' => count($igdbData['genres'] ?? []) > 1 ? $igdbData['genres'][1] : '',
-        'release_year' => $igdbData['release_year'] ?? '',
+        'genre' => $genre,
+        'subgenre' => $subgenre,
+        'r_year' => $igdbData['release_year'] ?? '', // Fixed field name to match database
         'online' => $igdbData['online'] ?? false,
         'offline' => $igdbData['offline'] ?? false,
         'image_url' => $igdbData['image_url'] ?? $igdbData['cover_url'] ?? '',

@@ -46,9 +46,21 @@ A comprehensive, database-driven LAN game tracking and planning system with 521 
 - **Dropdown Forms** - Collapsible edit interfaces that don't clutter the main view
 - **IGDB Database Integration** - Scan and import game data from IGDB
 - **Auto-Population** - Automatically fill forms with game information
-- **Cover Images** - Import high-quality cover art from IGDB
+- **Automatic Thumbnail Download** - IGDB cover images are automatically downloaded and saved locally
+- **Local Image Management** - Images stored in `img/` folder with fallback system
+- **CORS-Free Images** - No more external image loading issues or blocked content
 - **Security Controls** - Admin-only access with proper authentication
 - **Admin Access** - First registered user automatically becomes admin
+
+### 🖼️ **Image Management System**
+- **Automatic IGDB Downloads** - When selecting games from IGDB scan, thumbnails are automatically downloaded
+- **Local Storage** - Images saved to `img/` folder as `{game_id}.jpg/png/jpeg`
+- **Smart Fallback System** - Tries remote URL first, then local image, then placeholder
+- **CORS Problem Solved** - No more blocked external images or loading issues
+- **Multiple Format Support** - Supports JPG, PNG, JPEG, and WebP formats
+- **Database Integration** - `image_url` field cleared when local image is saved
+- **Error Handling** - Graceful fallback to remote URLs if download fails
+- **Visual Feedback** - Toast notifications show download success/failure status
 
 ## 📊 Database Statistics
 
@@ -115,6 +127,7 @@ lan_master_new/
 ├── logout.php                   # User logout
 ├── ajax_igdb.php               # IGDB API AJAX endpoint
 ├── igdb_api.php                # IGDB API integration class
+├── download_image.php          # IGDB thumbnail download handler
 ├── user_auth.php                # Authentication system & admin functions
 ├── functions.php                # Database and utility functions
 ├── csv_import_system.php        # CSV import functionality
@@ -153,9 +166,11 @@ lan_master_new/
 4. **Edit Games**: Click "Edit" button next to any game to open the inline form
 5. **IGDB Scanning**: Click "Scan IGDB" to search for game data and auto-populate
 6. **Select Results**: Choose from IGDB search results to import game details
-7. **Modify Details**: Update all game properties in the collapsible form
-8. **Delete Games**: Use "Delete" button with confirmation for safe removal
-9. **Stay on Main Page**: All editing happens without leaving the game list
+7. **Automatic Thumbnails**: Game thumbnails are automatically downloaded and saved locally
+8. **Visual Feedback**: Toast notifications confirm successful image downloads
+9. **Modify Details**: Update all game properties in the collapsible form
+10. **Delete Games**: Use "Delete" button with confirmation for safe removal
+11. **Stay on Main Page**: All editing happens without leaving the game list
 
 ### **Search Examples**
 ```bash

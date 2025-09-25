@@ -164,8 +164,42 @@
 * * Do not expose your `Client Secret` in frontend. Keep it in server.
 *
 * ---
-*
-* ## 9. Deliverables for Coding Agent
+
+## 9. Automatic Thumbnail Download System
+
+### **Overview**
+The IGDB scan workflow now includes automatic thumbnail downloading and local storage to solve CORS issues and improve performance.
+
+### **Workflow Enhancement**
+1. **IGDB Search**: User searches for games via IGDB API
+2. **Game Selection**: User selects the correct game from search results
+3. **Automatic Download**: System automatically downloads the IGDB cover image
+4. **Local Storage**: Image is saved to `img/{game_id}.jpg`
+5. **Database Update**: `image_url` field is cleared (set to NULL)
+6. **Fallback System**: UI automatically uses local image or shows placeholder
+
+### **Technical Implementation**
+- **Endpoint**: `download_image.php` handles image downloads
+- **Supported Formats**: JPG, PNG, JPEG, WebP
+- **Error Handling**: Graceful fallback with detailed error messages
+- **File Validation**: Checks image validity before saving
+- **Database Integration**: Automatically clears remote URLs when local images exist
+
+### **Benefits**
+- **CORS-Free**: Local images bypass cross-origin restrictions
+- **Performance**: Faster loading from local server
+- **Reliability**: No dependency on external IGDB image servers
+- **Offline Support**: Images available even when IGDB is unreachable
+- **Consistent UI**: Uniform image display across all games
+
+### **Visual Feedback**
+- **Success**: Green checkmark with "Image downloaded successfully"
+- **Error**: Red X with specific error message
+- **Progress**: Loading spinner during download process
+
+---
+
+## 10. Deliverables for Coding Agent
 * * Add **SCAN** button to each game row.
 * * Implement `/search` → `/games` workflow.
 * * Build modal for multiple matches.

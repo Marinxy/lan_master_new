@@ -89,6 +89,62 @@ action=get_igdb_details&id=2707
 }
 ```
 
+### **Download IGDB Image**
+**Endpoint**: `POST /download_image.php`
+
+**Description**: Downloads and saves IGDB cover images locally to the `img/` folder. Automatically called when selecting games from IGDB scan results.
+
+**Request**:
+```http
+POST /download_image.php HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+game_id=119&image_url=https://images.igdb.com/igdb/image/upload/t_cover_big/co2xgk.jpg
+```
+
+**Parameters**:
+- `game_id` (required) - The game ID to save the image for
+- `image_url` (required) - The IGDB image URL to download
+
+**Success Response**:
+```json
+{
+  "success": true,
+  "message": "Image downloaded and saved successfully",
+  "local_path": "img/119.jpg",
+  "filename": "119.jpg"
+}
+```
+
+**Error Responses**:
+```json
+{
+  "error": "Invalid game ID",
+  "message": "Please provide a valid game ID"
+}
+```
+
+```json
+{
+  "error": "Invalid image URL",
+  "message": "Please provide a valid image URL"
+}
+```
+
+```json
+{
+  "error": "Download failed",
+  "message": "Failed to download image: HTTP 404"
+}
+```
+
+**Features**:
+- **Automatic Format Detection**: Supports JPG, PNG, JPEG, WebP formats
+- **Database Integration**: Clears `image_url` field when local image is saved
+- **Error Handling**: Graceful failure with detailed error messages
+- **File Validation**: Checks image validity before saving
+- **Overwrite Protection**: Safely overwrites existing images
+
 ## 🔧 Internal Game Management API
 
 ### **Game CRUD Operations**

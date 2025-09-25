@@ -19,9 +19,42 @@ if (!isLoggedIn() && isset($_COOKIE['remember_token'])) {
 // Get current user
 $currentUser = getCurrentUser();
 
-// Handle admin actions
+// Handle AJAX requests
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    $action = $_POST['action'] ?? '';
+    
+    if ($action === 'get_game_data' && isset($_POST['game_id'])) {
+        header('Content-Type: application/json');
+        
+        if (!$currentUser || !isAdmin($currentUser['id'])) {
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+        
+        $gameId = (int)$_POST['game_id'];
+        $game = getGameById($gameId);
+        
+        if ($game) {
+            echo json_encode(['game' => $game]);
+        } else {
+            echo json_encode(['error' => 'Game not found']);
+        }
+        exit;
+    }
+}
+
+// Handle success message from redirect
 $message = '';
 $messageType = '';
+if (isset($_GET['updated']) && $_GET['updated'] == '1') {
+    $message = 'Game updated successfully!';
+    $messageType = 'success';
+} elseif (isset($_GET['deleted']) && $_GET['deleted'] == '1') {
+    $message = 'Game deleted successfully!';
+    $messageType = 'success';
+}
+
+// Handle admin actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $currentUser && isAdmin($currentUser['id'])) {
     $action = $_POST['action'] ?? '';
 
@@ -47,8 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $currentUser && isAdmin($currentUse
         } else {
             $success = updateGame($gameId, $title, $slug, $p_limit, $p_samepc, $genre, $subgenre, $r_year, $online, $offline, $price, $price_url, $image_url, $system_requirements);
             if ($success) {
-                $message = 'Game updated successfully!';
-                $messageType = 'success';
+                // Redirect to prevent form resubmission and ensure fresh data
+                header("Location: index.php?updated=1");
+                exit;
             } else {
                 $message = 'Failed to update game';
                 $messageType = 'error';
@@ -56,13 +90,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $currentUser && isAdmin($currentUse
         }
     } elseif ($action === 'delete_game' && isset($_POST['game_id'])) {
         $gameId = (int)$_POST['game_id'];
-        if (deleteGame($gameId)) {
-            $message = 'Game deleted successfully!';
-            $messageType = 'success';
+        $success = deleteGame($gameId);
+        if ($success) {
+            header("Location: index.php?deleted=1");
+            exit;
         } else {
             $message = 'Failed to delete game';
             $messageType = 'error';
         }
+    } elseif ($action === 'edit_game_page' && isset($_POST['game_id'])) {
+        // Redirect to dedicated edit page instead of deleting
+        $gameId = (int)$_POST['game_id'];
+        header("Location: edit_game.php?id=$gameId");
+        exit;
     }
 }
 
@@ -107,22 +147,11 @@ $gameCount = getGameCount();
 </head>
 <body>
 
-<!-- Google Analytics tracking code block start -->
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-70217512-1', 'auto');
-  ga('send', 'pageview');
-
-</script>
-<!-- Google Analytics tracking code block start -->
 
 <div class="body">
-	<div class="header">
-		<div>
+	<div class="header-fixed">
+		<div class="header-top">
 			<div class='inline-block'>
 				<a href="index.php"><img src='logo1.png'></a>
 			</div>
@@ -137,12 +166,62 @@ $gameCount = getGameCount();
             </div>
 		</div>
 		<div class='headermenu'>
-			<a href='#'>ADD GAME</a> - <a href='#'>ABOUT</a> - <a href='#'>CONTACT</a>				</div>
-		<div class='right'>
-			<div class='inline-block'>
-				<span class='ticker'><?php echo substr($gameCount, 0, 1); ?></span><span class='ticker'><?php echo substr($gameCount, 1, 1); ?></span><span class='ticker'><?php echo substr($gameCount, 2, 1); ?></span></div><div class='inline-block'>&nbsp;games in database</div>		</div>
+			<a href='#'>ADD GAME</a> - <a href='#'>ABOUT</a> - <a href='#'>CONTACT</a>
 		</div>
-		<h1>LAN Game List</h1>
+		<div class='header-stats'>
+			<h1>LAN Game List</h1>
+			<div class='game-count'>
+				<span class='ticker'><?php echo substr($gameCount, 0, 1); ?></span><span class='ticker'><?php echo substr($gameCount, 1, 1); ?></span><span class='ticker'><?php echo substr($gameCount, 2, 1); ?></span>&nbsp;games in database
+			</div>
+		</div>
+		
+		<!-- Filter Form in Header -->
+		<div class="filter-header">
+			<form class='auto_submit filter-form-single' action="index.php" method="get">
+				<div class="filter-single-row">
+					<div class="filter-group-compact">
+						<input class="text_search" type="text" name="search" maxlength="25" value="<?php echo h($filters['search']); ?>" placeholder="Search title/genre...">
+					</div>
+					<div class="filter-group-compact">
+						<label>Players:</label>
+						<input class="text_tiny" type="text" name="p_min" maxlength="3" value="<?php echo h($filters['p_min']); ?>" placeholder="Min">
+						<span>-</span>
+						<input class="text_tiny" type="text" name="p_max" maxlength="3" value="<?php echo h($filters['p_max']); ?>" placeholder="Max">
+					</div>
+					<div class="filter-group-compact">
+						<label>Local:</label>
+						<input class="text_tiny" type="text" name="p_samepc_min" maxlength="3" value="<?php echo h($filters['p_samepc_min']); ?>" placeholder="Min">
+					</div>
+					<div class="filter-group-compact">
+						<label>Year:</label>
+						<input class="text_tiny" type="text" name="r_min" maxlength="4" value="<?php echo h($filters['r_min']); ?>" placeholder="From">
+						<span>-</span>
+						<input class="text_tiny" type="text" name="r_max" maxlength="4" value="<?php echo h($filters['r_max']); ?>" placeholder="To">
+					</div>
+					<div class="filter-checkboxes-compact">
+						<label><input type="checkbox" name="online" value="yes"<?php echo $filters['online'] === 'yes' ? ' checked' : ''; ?>> Online</label>
+						<label><input type="checkbox" name="offline" value="yes"<?php echo $filters['offline'] === 'yes' ? ' checked' : ''; ?>> LAN</label>
+						<label><input type="checkbox" name="free" value="yes"<?php echo $filters['free'] === 'yes' ? ' checked' : ''; ?>> Free</label>
+						<label><input type="checkbox" name="standalone" value="yes"<?php echo $filters['standalone'] === 'yes' ? ' checked' : ''; ?>> Standalone</label>
+					</div>
+					<div class="filter-sort-compact">
+						<select name="s1">
+							<option value="title"<?php echo $sort['s1'] === 'title' ? ' selected' : ''; ?>>Title</option>
+							<option value="p_limit"<?php echo $sort['s1'] === 'p_limit' ? ' selected' : ''; ?>>Players</option>
+							<option value="p_samepc"<?php echo $sort['s1'] === 'p_samepc' ? ' selected' : ''; ?>>Local</option>
+							<option value="genre"<?php echo $sort['s1'] === 'genre' ? ' selected' : ''; ?>>Genre</option>
+							<option value="r_year"<?php echo $sort['s1'] === 'r_year' ? ' selected' : ''; ?>>Year</option>
+						</select>
+						<select name="so1">
+							<option value="ASC"<?php echo $sort['so1'] === 'ASC' ? ' selected' : ''; ?>>↑</option>
+							<option value="DESC"<?php echo $sort['so1'] === 'DESC' ? ' selected' : ''; ?>>↓</option>
+						</select>
+					</div>
+					<input type="submit" value="Filter" class="filter-submit-compact">
+				</div>
+			</form>
+		</div>
+	</div>
 
 	<?php if ($message): ?>
 	<div style="margin: 20px auto; max-width: 800px; padding: 15px; border-radius: 5px; text-align: center; font-weight: bold; <?php
@@ -152,46 +231,7 @@ $gameCount = getGameCount();
 	</div>
 	<?php endif; ?>
 
-	<div class="midsection">	
-	<div class="menu">
-		<form class='auto_submit' action="index.php" method="get">
-			<p class="menusubheader bold">Filter games</p>
-			<table>
-				<tr><td colspan="2">Title/genre search:</td></tr>
-				<tr><td colspan="2"><input class="text_search" type="text" name="search" maxlength="25" value="<?php echo h($filters['search']); ?>"></td></tr>
-				<tr><td><label for='p_min'>Player limit min.</label></td><td><input class="text_small" type="text" name="p_min" id="p_min" maxlength="3" value="<?php echo h($filters['p_min']); ?>"></td></tr>
-				<tr><td><label for='p_max'>Player limit max.</label></td><td><input class="text_small" type="text" name="p_max" id="p_max" maxlength="3" value="<?php echo h($filters['p_max']); ?>"></td></tr>
-				<tr><td><label for='p_samepc_min'>Local limit min.</label></td><td><input class="text_small" type="text" name="p_samepc_min" id="p_samepc_min" maxlength="3" value="<?php echo h($filters['p_samepc_min']); ?>"></td></tr>
-				<tr><td><label for='r_min'>Release earliest</label></td><td><input class="text_small" type="text" name="r_min" id="r_min" maxlength="4" value="<?php echo h($filters['r_min']); ?>"></td></tr>
-				<tr><td><label for='r_max'>Release latest</label></td><td><input class="text_small" type="text" name="r_max" id="r_max" maxlength="4" value="<?php echo h($filters['r_max']); ?>"></td></tr>
-			</table>
-			<table class="menu">
-				<tr><td><input type="checkbox" name="online" id="online" value="yes"<?php echo $filters['online'] === 'yes' ? ' checked' : ''; ?>><label for='online'>Online</label></td></tr>
-				<tr><td><input type="checkbox" name="offline" id="offline" value="yes"<?php echo $filters['offline'] === 'yes' ? ' checked' : ''; ?>><label for='offline'>Offline LAN</label></td></tr>
-				<tr><td><input type="checkbox" name="free" id="free" value="yes"<?php echo $filters['free'] === 'yes' ? ' checked' : ''; ?>><label for='free'>Free</label></td></tr>
-				<tr><td><input type="checkbox" name="standalone" id="standalone" value="yes"<?php echo $filters['standalone'] === 'yes' ? ' checked' : ''; ?>><label for='standalone'>Stand-alone</label></td></tr>
-			</table>
-			<p class="menusubheader bold">Sort by</p>
-			<table class="menu">
-				<tr><td>
-					<select name="s1">
-						<option value="title"<?php echo $sort['s1'] === 'title' ? ' selected' : ''; ?>>Title</option>
-						<option value="p_limit"<?php echo $sort['s1'] === 'p_limit' ? ' selected' : ''; ?>>Player limit</option>
-						<option value="p_samepc"<?php echo $sort['s1'] === 'p_samepc' ? ' selected' : ''; ?>>Local limit</option>
-						<option value="genre"<?php echo $sort['s1'] === 'genre' ? ' selected' : ''; ?>>Genre</option>
-						<option value="r_year"<?php echo $sort['s1'] === 'r_year' ? ' selected' : ''; ?>>Release year</option>
-					</select>
-					<select name="so1">
-						<option value="ASC"<?php echo $sort['so1'] === 'ASC' ? ' selected' : ''; ?>>ASC</option>
-						<option value="DESC"<?php echo $sort['so1'] === 'DESC' ? ' selected' : ''; ?>>DESC</option>
-					</select>
-				</td></tr>
-			</table>
-			<p><input type="submit" value="Find games"></p>
-		</form>
-			</div>
-
-	<div class="content">
+	<div class="main-content">
 	<table class="gamelist">
 		<tr>
 			<th class='title'><a href="<?php echo sortUrl($_GET, 'title', 'ASC'); ?>">Title of Game/Mod/Expansion/DLC</a></th>
@@ -199,22 +239,22 @@ $gameCount = getGameCount();
 			<th class='p_samepc'><a href="<?php echo sortUrl($_GET, 'p_samepc', 'DESC'); ?>">Local limit</a></th>
 			<th class='genre'><a href="<?php echo sortUrl($_GET, 'genre', 'ASC'); ?>">Genre</a></th>
 			<th class='subgenre'>Subgenre</th>
-			<th class='r_year'><a href="<?php echo sortUrl($_GET, 'r_year', 'DESC'); ?>">Re-<br>lease</a></th>
-			<th class='online'>On-<br>line</th>
-			<th class='offline'>Off-<br>line</th>
+			<th class='r_year'><a href="<?php echo sortUrl($_GET, 'r_year', 'DESC'); ?>">Release</a></th>
+			<th class='online'>Online</th>
+			<th class='offline'>Offline</th>
 			<th class='link'>Price</th>
 			<?php if ($currentUser && isAdmin($currentUser['id'])): ?><th class='link'>Actions</th><?php endif; ?>
 		</tr>
 <?php foreach ($games as $game): ?>
 <tr class='index'>
-	<td><a class='black' href='game.php?id=<?php echo $game['id']; ?>'><?php echo h($game['title']); ?></a></td>
-	<td class='right'><a class='black' href='game.php?id=<?php echo $game['id']; ?>'><?php echo $game['p_limit']; ?></a></td>
-	<td class='right'><a class='black' href='game.php?id=<?php echo $game['id']; ?>'><?php echo $game['p_samepc']; ?></a></td>
-	<td><a class='black' href='game.php?id=<?php echo $game['id']; ?>'><?php echo h($game['genre']); ?></a></td>
-	<td><a class='black' href='game.php?id=<?php echo $game['id']; ?>'><?php echo h($game['subgenre'] ?? ''); ?></a></td>
-	<td><a class='black' href='game.php?id=<?php echo $game['id']; ?>'><?php echo $game['r_year']; ?></a></td>
-	<td><a class='black' href='game.php?id=<?php echo $game['id']; ?>'><?php echo $game['online'] ? 'Yes' : 'No'; ?></a></td>
-	<td><a class='black' href='game.php?id=<?php echo $game['id']; ?>'><?php echo $game['offline'] ? 'Yes' : 'No'; ?></a></td>
+	<td><a class='black' href='#' onclick="toggleGameDetails(<?php echo $game['id']; ?>); return false;" style="cursor: pointer;"><?php echo h($game['title']); ?></a></td>
+	<td class='right'><?php echo $game['p_limit']; ?></td>
+	<td class='right'><?php echo $game['p_samepc']; ?></td>
+	<td><?php echo h($game['genre']); ?></td>
+	<td><?php echo h($game['subgenre'] ?? ''); ?></td>
+	<td><?php echo $game['r_year']; ?></td>
+	<td><?php echo $game['online'] ? 'Yes' : 'No'; ?></td>
+	<td><?php echo $game['offline'] ? 'Yes' : 'No'; ?></td>
 	<td class='right'><?php if ($game['price']): ?><a href="<?php echo h($game['price_url'] ?? '#'); ?>"><?php echo h($game['price']); ?></a><?php endif; ?></td>
 	<?php if ($currentUser && isAdmin($currentUser['id'])): ?><td class='right'><button onclick="toggleEditForm(<?php echo $game['id']; ?>)" style="background: #007cba; color: white; border: none; padding: 3px 8px; border-radius: 3px; cursor: pointer;">Edit</button></td><?php endif; ?>
 </tr>
@@ -295,17 +335,169 @@ $gameCount = getGameCount();
 				<div style="grid-column: span 2; text-align: center; margin-top: 15px;">
 					<button type="submit" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-right: 10px;">Update Game</button>
 					<button type="button" onclick="toggleEditForm(<?php echo $game['id']; ?>)" style="background: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">Cancel</button>
-					<form method="POST" action="index.php" style="display: inline; margin-left: 10px;">
-						<input type="hidden" name="action" value="delete_game">
-						<input type="hidden" name="game_id" value="<?php echo $game['id']; ?>">
-						<button type="submit" onclick="return confirm('Are you sure you want to delete this game?')" style="background: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">Delete Game</button>
-					</form>
 				</div>
+			</form>
+			
+			<!-- Delete form moved outside to prevent nesting -->
+			<form method="POST" action="index.php" style="margin-top: 10px; text-align: center;">
+				<input type="hidden" name="action" value="delete_game">
+				<input type="hidden" name="game_id" value="<?php echo $game['id']; ?>">
+				<button type="submit" onclick="return confirm('Are you sure you want to delete this game?')" style="background: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">Delete Game</button>
 			</form>
 		</div>
 	</td>
 </tr>
 <?php endif; ?>
+
+<!-- Game Details Dropdown -->
+<tr id="game-details-<?php echo $game['id']; ?>" style="display: none; background: #f0f8ff;" class="game-details">
+	<td colspan="<?php echo isset($currentUser) && isAdmin($currentUser['id']) ? '10' : '9'; ?>" style="padding: 20px;">
+		<div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+			<div style="display: flex; gap: 20px;">
+				<!-- Game Image -->
+				<div style="flex-shrink: 0;">
+					<?php if ($game['image_url']): ?>
+						<img src="<?php echo h($game['image_url']); ?>" style="width: 150px; height: auto; border-radius: 4px;" alt="<?php echo h($game['title']); ?>" onerror="this.onerror=null; this.src='img/<?php echo $game['id']; ?>.jpg'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';};" onload="if(this.nextElementSibling) this.nextElementSibling.style.display='none';">
+						<div style="width: 150px; height: 200px; background: #f0f0f0; border-radius: 4px; display: none; align-items: center; justify-content: center; color: #666;">No image available</div>
+					<?php else: ?>
+						<img src="img/<?php echo $game['id']; ?>.jpg" style="width: 150px; height: auto; border-radius: 4px;" alt="<?php echo h($game['title']); ?>" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+						<div style="width: 150px; height: 200px; background: #f0f0f0; border-radius: 4px; display: none; align-items: center; justify-content: center; color: #666;">No image available</div>
+					<?php endif; ?>
+				</div>
+				
+				<!-- Game Details -->
+				<div style="flex: 1;">
+					<h3 style="margin-top: 0; color: #333; margin-bottom: 15px;"><?php echo h($game['title']); ?></h3>
+					
+					<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+						<div><strong>Player Limit:</strong> <?php echo $game['p_limit']; ?></div>
+						<div><strong>Same PC Limit:</strong> <?php echo $game['p_samepc']; ?></div>
+						<div><strong>Genre:</strong> <?php echo h($game['genre']); ?></div>
+						<div><strong>Subgenre:</strong> <?php echo h($game['subgenre'] ?? 'N/A'); ?></div>
+						<div><strong>Release Year:</strong> <?php echo $game['r_year']; ?></div>
+						<div><strong>Online:</strong> <?php echo $game['online'] ? 'Yes' : 'No'; ?></div>
+						<div><strong>Offline LAN:</strong> <?php echo $game['offline'] ? 'Yes' : 'No'; ?></div>
+						<?php if ($game['price']): ?>
+						<div><strong>Price:</strong> 
+							<?php if ($game['price_url']): ?>
+								<a href="<?php echo h($game['price_url']); ?>" target="_blank"><?php echo h($game['price']); ?></a>
+							<?php else: ?>
+								<?php echo h($game['price']); ?>
+							<?php endif; ?>
+						</div>
+						<?php endif; ?>
+					</div>
+					
+					<?php if ($game['system_requirements']): ?>
+					<div style="margin-top: 15px;">
+						<strong>System Requirements:</strong>
+						<div style="margin-top: 5px; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 14px;">
+							<?php echo h($game['system_requirements']); ?>
+						</div>
+					</div>
+					<?php endif; ?>
+					
+					<!-- Admin Edit Section -->
+					<?php if ($currentUser && isAdmin($currentUser['id'])): ?>
+					<div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
+						<button onclick="toggleInlineEdit(<?php echo $game['id']; ?>)" style="background: #007cba; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-right: 10px;">Edit Game</button>
+						<button onclick="toggleGameDetails(<?php echo $game['id']; ?>)" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Close</button>
+					</div>
+					
+					<!-- Inline Edit Form -->
+					<div id="inline-edit-<?php echo $game['id']; ?>" style="display: none; margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 4px;">
+						<h4 style="margin-top: 0;">Edit Game Details</h4>
+						<form method="POST" action="index.php" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+							<input type="hidden" name="action" value="update_game">
+							<input type="hidden" name="game_id" value="<?php echo $game['id']; ?>">
+
+							<div>
+								<label style="display: block; margin-bottom: 5px; font-weight: bold;">Title:</label>
+								<div style="display: flex; gap: 10px;">
+									<input type="text" name="title" value="<?php echo h($game['title']); ?>" required style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" id="inline-title-<?php echo $game['id']; ?>">
+									<button type="button" onclick="scanIGDB(<?php echo $game['id']; ?>)" style="background: #17a2b8; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; white-space: nowrap;">Scan IGDB</button>
+								</div>
+							</div>
+
+							<div>
+								<label style="display: block; margin-bottom: 5px; font-weight: bold;">Slug:</label>
+								<input type="text" name="slug" value="<?php echo h($game['slug']); ?>" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+							</div>
+
+							<div>
+								<label style="display: block; margin-bottom: 5px; font-weight: bold;">Player Limit:</label>
+								<input type="number" name="p_limit" value="<?php echo $game['p_limit']; ?>" min="1" max="999" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+							</div>
+
+							<div>
+								<label style="display: block; margin-bottom: 5px; font-weight: bold;">Same PC Limit:</label>
+								<input type="number" name="p_samepc" value="<?php echo $game['p_samepc']; ?>" min="1" max="999" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+							</div>
+
+							<div>
+								<label style="display: block; margin-bottom: 5px; font-weight: bold;">Genre:</label>
+								<input type="text" name="genre" value="<?php echo h($game['genre']); ?>" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+							</div>
+
+							<div>
+								<label style="display: block; margin-bottom: 5px; font-weight: bold;">Subgenre:</label>
+								<input type="text" name="subgenre" value="<?php echo h($game['subgenre'] ?? ''); ?>" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+							</div>
+
+							<div>
+								<label style="display: block; margin-bottom: 5px; font-weight: bold;">Release Year:</label>
+								<input type="number" name="r_year" value="<?php echo $game['r_year']; ?>" min="1970" max="2030" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+							</div>
+
+							<div>
+								<label style="display: block; margin-bottom: 5px; font-weight: bold;">Price:</label>
+								<input type="text" name="price" value="<?php echo h($game['price'] ?? ''); ?>" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+							</div>
+
+							<div style="grid-column: span 2;">
+								<label style="display: block; margin-bottom: 5px; font-weight: bold;">Price URL:</label>
+								<input type="url" name="price_url" value="<?php echo h($game['price_url'] ?? ''); ?>" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+							</div>
+
+							<div style="grid-column: span 2;">
+								<label style="display: block; margin-bottom: 5px; font-weight: bold;">Image URL:</label>
+								<input type="url" name="image_url" value="<?php echo h($game['image_url'] ?? ''); ?>" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+							</div>
+
+							<div style="grid-column: span 2;">
+								<label style="display: block; margin-bottom: 5px; font-weight: bold;">System Requirements:</label>
+								<textarea name="system_requirements" rows="3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; resize: vertical;"><?php echo h($game['system_requirements'] ?? ''); ?></textarea>
+							</div>
+
+							<div style="grid-column: span 2;">
+								<label style="margin-right: 15px;"><input type="checkbox" name="online" <?php echo $game['online'] ? 'checked' : ''; ?>> Online</label>
+								<label><input type="checkbox" name="offline" <?php echo $game['offline'] ? 'checked' : ''; ?>> Offline LAN</label>
+							</div>
+
+							<div style="grid-column: span 2; text-align: center; margin-top: 15px;">
+								<button type="submit" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-right: 10px;">Update Game</button>
+								<button type="button" onclick="toggleInlineEdit(<?php echo $game['id']; ?>)" style="background: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">Cancel</button>
+							</div>
+						</form>
+						
+						<!-- Delete form -->
+						<form method="POST" action="index.php" style="margin-top: 10px; text-align: center;">
+							<input type="hidden" name="action" value="delete_game">
+							<input type="hidden" name="game_id" value="<?php echo $game['id']; ?>">
+							<button type="submit" onclick="return confirm('Are you sure you want to delete this game?')" style="background: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">Delete Game</button>
+						</form>
+					</div>
+					<?php else: ?>
+					<div style="margin-top: 20px;">
+						<button onclick="toggleGameDetails(<?php echo $game['id']; ?>)" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Close</button>
+					</div>
+					<?php endif; ?>
+				</div>
+			</div>
+		</div>
+	</td>
+</tr>
+
 <?php endforeach; ?>
 	</table>
 	</div>
@@ -575,18 +767,167 @@ function toggleEditForm(gameId) {
     }
 }
 
-// Close edit form when clicking outside
-document.addEventListener('click', function(event) {
-    if (!event.target.closest('.edit-form') && !event.target.closest('button')) {
+// Game Details Dropdown Functions
+function toggleGameDetails(gameId) {
+    const detailsRow = document.getElementById('game-details-' + gameId);
+    if (detailsRow.style.display === 'none' || detailsRow.style.display === '') {
+        // Hide all other dropdowns first
+        const allDetailsRows = document.querySelectorAll('.game-details');
+        allDetailsRows.forEach(row => row.style.display = 'none');
         const allEditForms = document.querySelectorAll('.edit-form');
         allEditForms.forEach(form => form.style.display = 'none');
+        
+        detailsRow.style.display = 'table-row';
+    } else {
+        detailsRow.style.display = 'none';
+    }
+}
+
+async function populateInlineEditForm(gameId) {
+    try {
+        // Fetch complete game data from server
+        const formData = new FormData();
+        formData.append('action', 'get_game_data');
+        formData.append('game_id', gameId);
+        
+        const response = await fetch('index.php', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch game data');
+        }
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            console.error('Error fetching game data:', data.error);
+            return;
+        }
+        
+        // Populate the inline edit form with the fetched data
+        const form = document.getElementById('inline-edit-' + gameId);
+        if (form && data.game) {
+            const game = data.game;
+            
+            const titleInput = form.querySelector('input[name="title"]');
+            const slugInput = form.querySelector('input[name="slug"]');
+            const playerLimitInput = form.querySelector('input[name="p_limit"]');
+            const localLimitInput = form.querySelector('input[name="p_samepc"]');
+            const genreInput = form.querySelector('input[name="genre"]');
+            const subgenreInput = form.querySelector('input[name="subgenre"]');
+            const releaseYearInput = form.querySelector('input[name="r_year"]');
+            const priceInput = form.querySelector('input[name="price"]');
+            const priceUrlInput = form.querySelector('input[name="price_url"]');
+            const imageUrlInput = form.querySelector('input[name="image_url"]');
+            const systemReqTextarea = form.querySelector('textarea[name="system_requirements"]');
+            const onlineCheckbox = form.querySelector('input[name="online"]');
+            const offlineCheckbox = form.querySelector('input[name="offline"]');
+            
+            if (titleInput) titleInput.value = game.title || '';
+            if (slugInput) slugInput.value = game.slug || '';
+            if (playerLimitInput) playerLimitInput.value = game.p_limit || '';
+            if (localLimitInput) localLimitInput.value = game.p_samepc || '';
+            if (genreInput) genreInput.value = game.genre || '';
+            if (subgenreInput) subgenreInput.value = game.subgenre || '';
+            if (releaseYearInput) releaseYearInput.value = game.r_year || '';
+            if (priceInput) priceInput.value = game.price || '';
+            if (priceUrlInput) priceUrlInput.value = game.price_url || '';
+            if (imageUrlInput) imageUrlInput.value = game.image_url || '';
+            if (systemReqTextarea) systemReqTextarea.value = game.system_requirements || '';
+            if (onlineCheckbox) onlineCheckbox.checked = game.online == 1;
+            if (offlineCheckbox) offlineCheckbox.checked = game.offline == 1;
+        }
+    } catch (error) {
+        console.error('Error populating inline edit form:', error);
+        // Fallback to extracting data from table if AJAX fails
+        populateFromTable(gameId);
+    }
+}
+
+function populateFromTable(gameId) {
+    // Fallback method: Get basic data from the main table row
+    const gameRow = document.querySelector(`tr.index:has(a[onclick*="toggleGameDetails(${gameId})"])`);
+    if (!gameRow) return;
+    
+    const cells = gameRow.querySelectorAll('td');
+    if (cells.length < 8) return;
+    
+    // Extract data from the table cells
+    const title = cells[0].querySelector('a').textContent.trim();
+    const playerLimit = cells[1].querySelector('a').textContent.trim();
+    const localLimit = cells[2].querySelector('a').textContent.trim();
+    const genre = cells[3].querySelector('a').textContent.trim();
+    const subgenre = cells[4].querySelector('a').textContent.trim();
+    const releaseYear = cells[5].querySelector('a').textContent.trim();
+    const online = cells[6].querySelector('a').textContent.trim() === 'Yes';
+    const offline = cells[7].querySelector('a').textContent.trim() === 'Yes';
+    
+    // Get price info if available
+    const priceCell = cells[8];
+    let price = '';
+    let priceUrl = '';
+    if (priceCell && priceCell.querySelector('a')) {
+        price = priceCell.querySelector('a').textContent.trim();
+        priceUrl = priceCell.querySelector('a').href || '';
+    }
+    
+    // Populate the inline edit form
+    const form = document.getElementById('inline-edit-' + gameId);
+    if (form) {
+        const titleInput = form.querySelector('input[name="title"]');
+        const playerLimitInput = form.querySelector('input[name="p_limit"]');
+        const localLimitInput = form.querySelector('input[name="p_samepc"]');
+        const genreInput = form.querySelector('input[name="genre"]');
+        const subgenreInput = form.querySelector('input[name="subgenre"]');
+        const releaseYearInput = form.querySelector('input[name="r_year"]');
+        const priceInput = form.querySelector('input[name="price"]');
+        const priceUrlInput = form.querySelector('input[name="price_url"]');
+        const onlineCheckbox = form.querySelector('input[name="online"]');
+        const offlineCheckbox = form.querySelector('input[name="offline"]');
+        
+        if (titleInput) titleInput.value = title;
+        if (playerLimitInput) playerLimitInput.value = playerLimit;
+        if (localLimitInput) localLimitInput.value = localLimit;
+        if (genreInput) genreInput.value = genre;
+        if (subgenreInput) subgenreInput.value = subgenre;
+        if (releaseYearInput) releaseYearInput.value = releaseYear;
+        if (priceInput) priceInput.value = price;
+        if (priceUrlInput) priceUrlInput.value = priceUrl;
+        if (onlineCheckbox) onlineCheckbox.checked = online;
+        if (offlineCheckbox) offlineCheckbox.checked = offline;
+    }
+}
+
+function toggleInlineEdit(gameId) {
+    const editForm = document.getElementById('inline-edit-' + gameId);
+    if (editForm.style.display === 'none' || editForm.style.display === '') {
+        populateInlineEditForm(gameId);
+        editForm.style.display = 'block';
+    } else {
+        editForm.style.display = 'none';
+    }
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.edit-form') && 
+        !event.target.closest('.game-details') && 
+        !event.target.closest('button') && 
+        !event.target.closest('a[onclick*="toggleGameDetails"]')) {
+        const allEditForms = document.querySelectorAll('.edit-form');
+        allEditForms.forEach(form => form.style.display = 'none');
+        const allDetailsRows = document.querySelectorAll('.game-details');
+        allDetailsRows.forEach(row => row.style.display = 'none');
     }
 });
 
 // IGDB Functions
 function scanIGDB(gameId) {
     currentGameId = gameId;
-    const titleInput = document.getElementById('title-' + gameId);
+    // Check both regular edit form and inline edit form
+    const titleInput = document.getElementById('title-' + gameId) || document.getElementById('inline-title-' + gameId);
     const searchInput = document.getElementById('igdb-search-input');
 
     if (titleInput && titleInput.value.trim()) {
@@ -619,12 +960,13 @@ async function searchIGDB() {
     document.getElementById('igdb-error').style.display = 'none';
 
     try {
+        const formData = new FormData();
+        formData.append('action', 'search_igdb');
+        formData.append('query', query);
+        
         const response = await fetch('ajax_igdb.php', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'action=search_igdb&query=' + encodeURIComponent(query)
+            body: formData
         });
 
         if (!response.ok) {
@@ -721,12 +1063,13 @@ async function populateGameData(igdbId) {
     button.disabled = true;
 
     try {
+        const formData = new FormData();
+        formData.append('action', 'get_igdb_details');
+        formData.append('id', igdbId);
+        
         const response = await fetch('ajax_igdb.php', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'action=get_igdb_details&id=' + igdbId
+            body: formData
         });
 
         if (!response.ok) {
@@ -768,10 +1111,10 @@ async function populateGameData(igdbId) {
                 fieldsUpdated++;
             }
         }
-        if (data.release_year) {
+        if (data.r_year) {
             const yearField = form.querySelector('input[name="r_year"]');
             if (yearField) {
-                yearField.value = data.release_year;
+                yearField.value = data.r_year;
                 fieldsUpdated++;
             }
         }
@@ -802,12 +1145,60 @@ async function populateGameData(igdbId) {
             fieldsUpdated++;
         }
 
-        // Optional fields
+        // Handle image URL - download and save locally
         if (data.image_url) {
-            const imageField = form.querySelector('input[name="image_url"]');
-            if (imageField) {
-                imageField.value = data.image_url;
-                fieldsUpdated++;
+            // Download the image locally
+            try {
+                const imageFormData = new FormData();
+                imageFormData.append('game_id', currentGameId);
+                imageFormData.append('image_url', data.image_url);
+                
+                const imageResponse = await fetch('download_image.php', {
+                    method: 'POST',
+                    body: imageFormData
+                });
+                
+                const imageResult = await imageResponse.json();
+                
+                if (imageResult.success) {
+                    // Clear the image_url field since we now have a local image
+                    const imageField = form.querySelector('input[name="image_url"]');
+                    if (imageField) {
+                        imageField.value = '';
+                    }
+                    
+                    // Update thumbnail with local image
+                    updateGameDetailsThumbnail(currentGameId, imageResult.local_path);
+                    
+                    if (window.showToast) {
+                        window.showToast(`Image downloaded and saved as ${imageResult.filename}`, 'success');
+                    }
+                } else {
+                    // Fallback to remote URL if download fails
+                    const imageField = form.querySelector('input[name="image_url"]');
+                    if (imageField) {
+                        imageField.value = data.image_url;
+                        fieldsUpdated++;
+                    }
+                    updateGameDetailsThumbnail(currentGameId, data.image_url);
+                    
+                    if (window.showToast) {
+                        window.showToast(`Image download failed: ${imageResult.message}. Using remote URL.`, 'warning');
+                    }
+                }
+            } catch (imageError) {
+                console.error('Image download error:', imageError);
+                // Fallback to remote URL if download fails
+                const imageField = form.querySelector('input[name="image_url"]');
+                if (imageField) {
+                    imageField.value = data.image_url;
+                    fieldsUpdated++;
+                }
+                updateGameDetailsThumbnail(currentGameId, data.image_url);
+                
+                if (window.showToast) {
+                    window.showToast('Image download failed. Using remote URL.', 'warning');
+                }
             }
         }
 
@@ -822,12 +1213,29 @@ async function populateGameData(igdbId) {
         // Close modal
         closeIGDBModal();
 
-        // Show success message
-        const successMsg = `Game data populated successfully! Updated ${fieldsUpdated} fields.`;
+        // Show success message with reminder to save
+        const successMsg = `Game data populated successfully! Updated ${fieldsUpdated} fields.\n\n⚠️ Remember to click "Update Game" to save these changes!`;
         if (window.showToast) {
             window.showToast(successMsg, 'success');
         } else {
             alert(successMsg);
+        }
+
+        // Highlight the Update Game button to draw attention
+        const editForm = document.getElementById('inline-edit-' + currentGameId);
+        if (editForm) {
+            const updateButton = editForm.querySelector('button[type="submit"]');
+            if (updateButton) {
+                // Add visual emphasis to the Update Game button
+                updateButton.style.animation = 'pulse 2s infinite';
+                updateButton.style.boxShadow = '0 0 10px #28a745';
+                
+                // Remove the emphasis after 10 seconds
+                setTimeout(() => {
+                    updateButton.style.animation = '';
+                    updateButton.style.boxShadow = '';
+                }, 10000);
+            }
         }
     } catch (error) {
         console.error('IGDB Details Error:', error);
@@ -840,6 +1248,56 @@ async function populateGameData(igdbId) {
         // Restore button state
         button.textContent = originalText;
         button.disabled = false;
+    }
+}
+
+function updateGameDetailsThumbnail(gameId, imageUrl) {
+    // Find the game details section
+    const gameDetailsRow = document.getElementById('game-details-' + gameId);
+    if (!gameDetailsRow || gameDetailsRow.style.display === 'none') {
+        return; // Details section is not open
+    }
+
+    // Find the image container in the game details section
+    const imageContainer = gameDetailsRow.querySelector('div[style*="flex-shrink: 0"]');
+    if (!imageContainer) {
+        return;
+    }
+
+    // Update or create the image element
+    const existingImg = imageContainer.querySelector('img');
+    const existingPlaceholder = imageContainer.querySelector('div[style*="No image available"]');
+
+    if (imageUrl && imageUrl.trim()) {
+        if (existingImg) {
+            // Update existing image with fallback
+            existingImg.src = imageUrl;
+            existingImg.style.display = 'block';
+            existingImg.onerror = function() {
+                this.onerror = null;
+                this.src = 'img/' + gameId + '.jpg';
+                this.onerror = function() {
+                    this.style.display = 'none';
+                    if (this.nextElementSibling) this.nextElementSibling.style.display = 'flex';
+                };
+            };
+            existingImg.onload = function() {
+                if (this.nextElementSibling) this.nextElementSibling.style.display = 'none';
+            };
+        } else {
+            // Replace placeholder with new image including fallback
+            imageContainer.innerHTML = `
+                <img src="${imageUrl}" style="width: 150px; height: auto; border-radius: 4px;" alt="Game Image" 
+                     onerror="this.onerror=null; this.src='img/${gameId}.jpg'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';};" 
+                     onload="if(this.nextElementSibling) this.nextElementSibling.style.display='none';">
+                <div style="width: 150px; height: 200px; background: #f0f0f0; border-radius: 4px; display: none; align-items: center; justify-content: center; color: #666;">No image available</div>
+            `;
+        }
+        
+        // Remove placeholder if it exists
+        if (existingPlaceholder) {
+            existingPlaceholder.remove();
+        }
     }
 }
 
