@@ -71,15 +71,15 @@ try {
 			<div class='inline-block'>
 				<a href="index.php"><img src='logo1.png'></a>
 			</div>
-			<div class='right'>
-				<?php if ($currentUser): ?>
-					<span style="color: #007cba;">Welcome, <?php echo h($currentUser['username']); ?>!</span> |
-					<a href='profile.php'>Profile</a> |
-					<a href='logout.php'>Logout</a>
-				<?php else: ?>
-					<a href='login.php'>Login</a> or <a href='signup.php'>sign up</a>
-				<?php endif; ?>
-			</div>
+            <div class='right'>
+                <?php if ($currentUser): ?>
+                    <span style="color: #007cba;">Welcome, <?php echo h($currentUser['username']); ?>!</span> |
+                    <a href='profile.php'>Profile</a> |
+                    <a href='logout.php'>Logout</a>
+                <?php else: ?>
+                    <a href='login.php'>Login</a> or <a href='signup.php'>sign up</a>
+                <?php endif; ?>
+            </div>
 		</div>
 		<div class='headermenu'>
 			<a href='#'>ADD GAME</a> - <a href='#'>ABOUT</a> - <a href='#'>CONTACT</a>		</div>

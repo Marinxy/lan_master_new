@@ -47,7 +47,6 @@ try {
     $db->exec("CREATE INDEX IF NOT EXISTS idx_sessions_token ON user_sessions(session_token)");
     $db->exec("CREATE INDEX IF NOT EXISTS idx_sessions_user ON user_sessions(user_id)");
     
-    echo "✅ User authentication tables created successfully!\n";
     
 } catch (PDOException $e) {
     die("❌ Error creating user tables: " . $e->getMessage());
@@ -231,11 +230,101 @@ function getUserById($userId) {
         $stmt = $db->prepare("SELECT id, username, email, created_at, last_login FROM users WHERE id = ? AND is_active = 1");
         $stmt->execute([$userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    return false;
+}
+}
+
+// Admin Functions
+
+// Check if user is admin
+function isAdmin($userId) {
+    global $db;
+
+    try {
+        $stmt = $db->prepare("SELECT is_active FROM users WHERE id = ?");
+        $stmt->execute([$userId]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // For now, consider the first user as admin
+        // In production, you might want to add an admin flag to users table
+        if ($user && $userId == 1) {
+            return true;
+        }
+
+        return false;
     } catch (PDOException $e) {
         return false;
     }
 }
 
-echo "✅ User authentication functions created successfully!\n";
-echo "Ready to implement registration and login pages!\n";
+// Get game by ID for editing
+function getGameById($gameId) {
+    global $db;
+
+    try {
+        $stmt = $db->prepare("SELECT * FROM games WHERE id = ?");
+        $stmt->execute([$gameId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        return false;
+    }
+}
+
+// Update game information
+function updateGame($gameId, $title, $slug, $p_limit, $p_samepc, $genre, $subgenre, $r_year, $online, $offline, $price = null, $price_url = null, $image_url = null, $system_requirements = null) {
+    global $db;
+
+    try {
+        $stmt = $db->prepare("
+            UPDATE games
+            SET title = ?, slug = ?, p_limit = ?, p_samepc = ?, genre = ?, subgenre = ?, r_year = ?, online = ?, offline = ?, price = ?, price_url = ?, image_url = ?, system_requirements = ?, updated_at = datetime('now')
+            WHERE id = ?
+        ");
+
+        return $stmt->execute([$title, $slug, $p_limit, $p_samepc, $genre, $subgenre, $r_year, $online, $offline, $price, $price_url, $image_url, $system_requirements, $gameId]);
+
+    } catch (PDOException $e) {
+        echo "Error updating game: " . $e->getMessage() . "\n";
+        return false;
+    }
+}
+
+// Delete game
+function deleteGame($gameId) {
+    global $db;
+
+    try {
+        $stmt = $db->prepare("DELETE FROM games WHERE id = ?");
+        return $stmt->execute([$gameId]);
+    } catch (PDOException $e) {
+        return false;
+    }
+}
+
+// Get all games for admin list
+function getAllGamesAdmin($limit = 100, $offset = 0) {
+    global $db;
+
+    try {
+        $stmt = $db->prepare("SELECT * FROM games ORDER BY title LIMIT ? OFFSET ?");
+        $stmt->execute([$limit, $offset]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        return [];
+    }
+}
+
+// Get games count for admin
+function getGamesCountAdmin() {
+    global $db;
+
+    try {
+        $stmt = $db->query("SELECT COUNT(*) as count FROM games");
+        return $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+    } catch (PDOException $e) {
+        return 0;
+    }
+}
+
 ?>

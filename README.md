@@ -24,6 +24,14 @@ A comprehensive, database-driven LAN game tracking and planning system with 521 
 - **Price Filtering** - Free vs paid games
 - **Advanced Sorting** - Sort by title, player limit, genre, or release year
 
+### 🛠️ **Inline Admin System**
+- **Inline Editing** - Edit games directly on the main page without leaving
+- **Dropdown Forms** - Collapsible edit forms for each game
+- **One-Click Access** - Edit buttons appear next to each game for admins
+- **Real-time Updates** - Changes saved immediately without page refresh
+- **Streamlined Workflow** - No need for separate admin pages
+- **IGDB Integration** - Scan and import game data from IGDB database
+
 ### 🔐 **User Management**
 - **Secure Registration** - Email and password-based user accounts
 - **Session Management** - 24-hour sessions with "Remember Me" option
@@ -31,10 +39,21 @@ A comprehensive, database-driven LAN game tracking and planning system with 521 
 - **Password Security** - Modern password hashing (PHP 8.3+)
 - **Profile Management** - User account information and settings
 
+### 🛠️ **Admin Features**
+- **Inline Game Management** - Edit and delete games directly on the main page
+- **Comprehensive Editing** - Modify all game properties including title, genre, player limits
+- **One-Click Editing** - Edit buttons appear next to each game for admins
+- **Dropdown Forms** - Collapsible edit interfaces that don't clutter the main view
+- **IGDB Database Integration** - Scan and import game data from IGDB
+- **Auto-Population** - Automatically fill forms with game information
+- **Cover Images** - Import high-quality cover art from IGDB
+- **Security Controls** - Admin-only access with proper authentication
+- **Admin Access** - First registered user automatically becomes admin
+
 ## 📊 Database Statistics
 
 ### **Game Library Overview**
-- **Total Games**: 521
+- **Total Games**: 520
 - **Genre Distribution**:
   - FPS: 179 games (34%)
   - Strategy: 141 games (27%)
@@ -88,13 +107,15 @@ http://localhost:8081/
 
 ```
 lan_master_new/
-├── index.php                    # Main game list and search page
+├── index.php                    # Main game list with inline admin editing
 ├── game.php                     # Individual game detail pages
 ├── signup.php                   # User registration
 ├── login.php                    # User login
 ├── profile.php                  # User profile (authenticated)
 ├── logout.php                   # User logout
-├── user_auth.php                # Authentication system
+├── ajax_igdb.php               # IGDB API AJAX endpoint
+├── igdb_api.php                # IGDB API integration class
+├── user_auth.php                # Authentication system & admin functions
 ├── functions.php                # Database and utility functions
 ├── csv_import_system.php        # CSV import functionality
 ├── import_csv.php              # Legacy CSV importer
@@ -104,6 +125,8 @@ lan_master_new/
 ├── includes/
 │   └── style.css              # Website styling
 ├── games/                      # Original HTML game files (139 files)
+├── docs/
+│   └── igdb_scan.md           # IGDB integration specification
 └── README.md                   # This documentation
 ```
 
@@ -119,6 +142,17 @@ lan_master_new/
 2. **Login**: Access your account at `/login.php`
 3. **Profile**: View and manage your profile at `/profile.php`
 4. **Logout**: Securely logout via the header menu
+
+### **For Administrators** (First User Only)
+1. **Register**: Create the first account at `/signup.php` (automatically becomes admin)
+2. **Login**: Use `/login.php` to authenticate
+3. **Inline Editing**: Edit buttons appear next to each game on the main page
+4. **Edit Games**: Click "Edit" button next to any game to open the inline form
+5. **IGDB Scanning**: Click "Scan IGDB" to search for game data and auto-populate
+6. **Select Results**: Choose from IGDB search results to import game details
+7. **Modify Details**: Update all game properties in the collapsible form
+8. **Delete Games**: Use "Delete" button with confirmation for safe removal
+9. **Stay on Main Page**: All editing happens without leaving the game list
 
 ### **Search Examples**
 ```bash

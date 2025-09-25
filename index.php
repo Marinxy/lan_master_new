@@ -19,6 +19,53 @@ if (!isLoggedIn() && isset($_COOKIE['remember_token'])) {
 // Get current user
 $currentUser = getCurrentUser();
 
+// Handle admin actions
+$message = '';
+$messageType = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $currentUser && isAdmin($currentUser['id'])) {
+    $action = $_POST['action'] ?? '';
+
+    if ($action === 'update_game' && isset($_POST['game_id'])) {
+        $gameId = (int)$_POST['game_id'];
+        $title = trim($_POST['title'] ?? '');
+        $slug = trim($_POST['slug'] ?? '');
+        $p_limit = (int)($_POST['p_limit'] ?? 1);
+        $p_samepc = (int)($_POST['p_samepc'] ?? 1);
+        $genre = trim($_POST['genre'] ?? '');
+        $subgenre = trim($_POST['subgenre'] ?? '');
+        $r_year = (int)($_POST['r_year'] ?? 1990);
+        $online = isset($_POST['online']);
+        $offline = isset($_POST['offline']);
+        $price = trim($_POST['price'] ?? '');
+        $price_url = trim($_POST['price_url'] ?? '');
+        $image_url = trim($_POST['image_url'] ?? '');
+        $system_requirements = trim($_POST['system_requirements'] ?? '');
+
+        if (empty($title) || empty($genre)) {
+            $message = 'Title and genre are required';
+            $messageType = 'error';
+        } else {
+            $success = updateGame($gameId, $title, $slug, $p_limit, $p_samepc, $genre, $subgenre, $r_year, $online, $offline, $price, $price_url, $image_url, $system_requirements);
+            if ($success) {
+                $message = 'Game updated successfully!';
+                $messageType = 'success';
+            } else {
+                $message = 'Failed to update game';
+                $messageType = 'error';
+            }
+        }
+    } elseif ($action === 'delete_game' && isset($_POST['game_id'])) {
+        $gameId = (int)$_POST['game_id'];
+        if (deleteGame($gameId)) {
+            $message = 'Game deleted successfully!';
+            $messageType = 'success';
+        } else {
+            $message = 'Failed to delete game';
+            $messageType = 'error';
+        }
+    }
+}
+
 // Get filter parameters
 $filters = [];
 $filters['search'] = $_GET['search'] ?? '';
@@ -78,22 +125,30 @@ $gameCount = getGameCount();
 				<a href="index.php"><img src='logo1.png'></a>
 			</div>
 			<div class='right'>
-				<?php if ($currentUser): ?>
-					<span style="color: #007cba;">Welcome, <?php echo h($currentUser['username']); ?>!</span> |
-					<a href='profile.php'>Profile</a> |
-					<a href='logout.php'>Logout</a>
-				<?php else: ?>
-					<a href='login.php'>Login</a> or <a href='signup.php'>sign up</a>
-				<?php endif; ?>
-			</div>
+                <?php if ($currentUser): ?>
+                    <span style="color: #007cba;">Welcome, <?php echo h($currentUser['username']); ?>!</span> |
+                    <a href='profile.php'>Profile</a> |
+                    <a href='logout.php'>Logout</a>
+                <?php else: ?>
+                    <a href='login.php'>Login</a> or <a href='signup.php'>sign up</a>
+                <?php endif; ?>
+            </div>
 		</div>
 		<div class='headermenu'>
-			<a href='#'>ADD GAME</a> - <a href='#'>ABOUT</a> - <a href='#'>CONTACT</a>		</div>
+			<a href='#'>ADD GAME</a> - <a href='#'>ABOUT</a> - <a href='#'>CONTACT</a>				</div>
 		<div class='right'>
 			<div class='inline-block'>
 				<span class='ticker'><?php echo substr($gameCount, 0, 1); ?></span><span class='ticker'><?php echo substr($gameCount, 1, 1); ?></span><span class='ticker'><?php echo substr($gameCount, 2, 1); ?></span></div><div class='inline-block'>&nbsp;games in database</div>		</div>
 		</div>
 		<h1>LAN Game List</h1>
+
+	<?php if ($message): ?>
+	<div style="margin: 20px auto; max-width: 800px; padding: 15px; border-radius: 5px; text-align: center; font-weight: bold; <?php
+		echo $messageType === 'success' ? 'background: #d4edda; color: #155724; border: 1px solid #c3e6cb;' : 'background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;';
+	?>">
+		<?php echo h($message); ?>
+	</div>
+	<?php endif; ?>
 
 	<div class="midsection">	
 	<div class="menu">
@@ -146,6 +201,7 @@ $gameCount = getGameCount();
 			<th class='online'>On-<br>line</th>
 			<th class='offline'>Off-<br>line</th>
 			<th class='link'>Price</th>
+			<?php if ($currentUser && isAdmin($currentUser['id'])): ?><th class='link'>Actions</th><?php endif; ?>
 		</tr>
 <?php foreach ($games as $game): ?>
 <tr class='index'>
@@ -158,9 +214,393 @@ $gameCount = getGameCount();
 	<td><a class='black' href='game.php?id=<?php echo $game['id']; ?>'><?php echo $game['online'] ? 'Yes' : 'No'; ?></a></td>
 	<td><a class='black' href='game.php?id=<?php echo $game['id']; ?>'><?php echo $game['offline'] ? 'Yes' : 'No'; ?></a></td>
 	<td class='right'><?php if ($game['price']): ?><a href="<?php echo h($game['price_url'] ?? '#'); ?>"><?php echo h($game['price']); ?></a><?php endif; ?></td>
+	<?php if ($currentUser && isAdmin($currentUser['id'])): ?><td class='right'><button onclick="toggleEditForm(<?php echo $game['id']; ?>)" style="background: #007cba; color: white; border: none; padding: 3px 8px; border-radius: 3px; cursor: pointer;">Edit</button></td><?php endif; ?>
 </tr>
+<?php if ($currentUser && isAdmin($currentUser['id'])): ?>
+<tr id="edit-form-<?php echo $game['id']; ?>" style="display: none; background: #f9f9f9;" class="edit-form">
+	<td colspan="<?php echo isset($currentUser) && isAdmin($currentUser['id']) ? '10' : '9'; ?>" style="padding: 20px;">
+		<div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+			<h3 style="margin-top: 0; color: #333;">Edit Game: <?php echo h($game['title']); ?></h3>
+
+			<form method="POST" action="index.php" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+				<input type="hidden" name="action" value="update_game">
+				<input type="hidden" name="game_id" value="<?php echo $game['id']; ?>">
+
+				<div>
+					<label style="display: block; margin-bottom: 5px; font-weight: bold;">Title:</label>
+					<div style="display: flex; gap: 10px;">
+						<input type="text" name="title" value="<?php echo h($game['title']); ?>" required style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" id="title-<?php echo $game['id']; ?>">
+						<button type="button" onclick="scanIGDB(<?php echo $game['id']; ?>)" style="background: #17a2b8; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; white-space: nowrap;">Scan IGDB</button>
+					</div>
+				</div>
+
+				<div>
+					<label style="display: block; margin-bottom: 5px; font-weight: bold;">Slug:</label>
+					<input type="text" name="slug" value="<?php echo h($game['slug']); ?>" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+				</div>
+
+				<div>
+					<label style="display: block; margin-bottom: 5px; font-weight: bold;">Player Limit:</label>
+					<input type="number" name="p_limit" value="<?php echo $game['p_limit']; ?>" min="1" max="999" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+				</div>
+
+				<div>
+					<label style="display: block; margin-bottom: 5px; font-weight: bold;">Same PC Limit:</label>
+					<input type="number" name="p_samepc" value="<?php echo $game['p_samepc']; ?>" min="1" max="999" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+				</div>
+
+				<div>
+					<label style="display: block; margin-bottom: 5px; font-weight: bold;">Genre:</label>
+					<input type="text" name="genre" value="<?php echo h($game['genre']); ?>" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+				</div>
+
+				<div>
+					<label style="display: block; margin-bottom: 5px; font-weight: bold;">Subgenre:</label>
+					<input type="text" name="subgenre" value="<?php echo h($game['subgenre'] ?? ''); ?>" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+				</div>
+
+				<div>
+					<label style="display: block; margin-bottom: 5px; font-weight: bold;">Release Year:</label>
+					<input type="number" name="r_year" value="<?php echo $game['r_year']; ?>" min="1990" max="2025" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+				</div>
+
+				<div>
+					<label style="display: block; margin-bottom: 5px; font-weight: bold;">Price:</label>
+					<input type="text" name="price" value="<?php echo h($game['price'] ?? ''); ?>" placeholder="e.g. $29.99 or Free" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+				</div>
+
+				<div style="grid-column: span 2;">
+					<label style="display: block; margin-bottom: 5px; font-weight: bold;">Price URL:</label>
+					<input type="url" name="price_url" value="<?php echo h($game['price_url'] ?? ''); ?>" placeholder="https://store.example.com" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+				</div>
+
+				<div style="grid-column: span 2;">
+					<label style="display: block; margin-bottom: 5px; font-weight: bold;">Image URL:</label>
+					<input type="url" name="image_url" value="<?php echo h($game['image_url'] ?? ''); ?>" placeholder="https://example.com/image.jpg" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+				</div>
+
+				<div style="grid-column: span 2;">
+					<label style="display: block; margin-bottom: 5px; font-weight: bold;">System Requirements:</label>
+					<textarea name="system_requirements" rows="3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; resize: vertical;"><?php echo h($game['system_requirements'] ?? ''); ?></textarea>
+				</div>
+
+				<div style="grid-column: span 2;">
+					<label style="font-weight: bold;">Capabilities:</label><br>
+					<label style="margin-right: 15px;"><input type="checkbox" name="online" <?php echo $game['online'] ? 'checked' : ''; ?>> Online</label>
+					<label><input type="checkbox" name="offline" <?php echo $game['offline'] ? 'checked' : ''; ?>> Offline LAN</label>
+				</div>
+
+				<div style="grid-column: span 2; text-align: center; margin-top: 15px;">
+					<button type="submit" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-right: 10px;">Update Game</button>
+					<button type="button" onclick="toggleEditForm(<?php echo $game['id']; ?>)" style="background: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">Cancel</button>
+					<form method="POST" action="index.php" style="display: inline; margin-left: 10px;">
+						<input type="hidden" name="action" value="delete_game">
+						<input type="hidden" name="game_id" value="<?php echo $game['id']; ?>">
+						<button type="submit" onclick="return confirm('Are you sure you want to delete this game?')" style="background: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">Delete Game</button>
+					</form>
+				</div>
+			</form>
+		</div>
+	</td>
+</tr>
+<?php endif; ?>
 <?php endforeach; ?>
 	</table>
 	</div>
 	</div>
-	<div class='footer'><p>Copyright 2025 LAN Game List</p></div></div></body></html>
+	<div class='footer'><p>Copyright 2025 LAN Game List</p></div>
+</div>
+
+<!-- IGDB Search Modal -->
+<div id="igdb-modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
+    <div style="background: white; margin: 5% auto; padding: 20px; border-radius: 8px; width: 90%; max-width: 800px; max-height: 80vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #333;">Search IGDB</h2>
+            <button onclick="closeIGDBModal()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Close</button>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <input type="text" id="igdb-search-input" placeholder="Search for games..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;">
+            <button onclick="searchIGDB()" style="background: #007cba; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px;">Search</button>
+        </div>
+
+        <div id="igdb-results" style="display: none;">
+            <h3>Search Results</h3>
+            <div id="igdb-results-list" style="max-height: 400px; overflow-y: auto;"></div>
+        </div>
+
+        <div id="igdb-loading" style="display: none; text-align: center; padding: 20px;">
+            <div style="border: 4px solid #f3f3f3; border-top: 4px solid #007cba; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; margin: 0 auto 20px;"></div>
+            <p>Searching IGDB...</p>
+        </div>
+
+        <div id="igdb-error" style="display: none; background: #f8d7da; color: #721c24; padding: 15px; border-radius: 4px; margin-top: 15px;"></div>
+    </div>
+</div>
+
+<style>
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.igdb-result {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #f9f9f9;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.igdb-result:hover {
+    background: #e9ecef;
+}
+
+.igdb-result.selected {
+    background: #d4edda;
+    border-color: #28a745;
+}
+
+.igdb-result-cover {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 15px;
+}
+
+.igdb-result-info {
+    flex: 1;
+}
+
+.igdb-result-title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.igdb-result-year {
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.igdb-result-genres {
+    color: #007cba;
+    font-size: 14px;
+}
+
+.use-result-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+</style>
+
+<script>
+let currentGameId = null;
+function toggleEditForm(gameId) {
+    const formRow = document.getElementById('edit-form-' + gameId);
+    if (formRow.style.display === 'none' || formRow.style.display === '') {
+        // Hide all other edit forms first
+        const allEditForms = document.querySelectorAll('.edit-form');
+        allEditForms.forEach(form => form.style.display = 'none');
+        formRow.style.display = 'table-row';
+    } else {
+        formRow.style.display = 'none';
+    }
+}
+
+// Close edit form when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.edit-form') && !event.target.closest('button')) {
+        const allEditForms = document.querySelectorAll('.edit-form');
+        allEditForms.forEach(form => form.style.display = 'none');
+    }
+});
+
+// IGDB Functions
+function scanIGDB(gameId) {
+    currentGameId = gameId;
+    const titleInput = document.getElementById('title-' + gameId);
+    const searchInput = document.getElementById('igdb-search-input');
+
+    if (titleInput && titleInput.value.trim()) {
+        searchInput.value = titleInput.value.trim();
+    }
+
+    document.getElementById('igdb-modal').style.display = 'block';
+    searchIGDB();
+}
+
+function closeIGDBModal() {
+    document.getElementById('igdb-modal').style.display = 'none';
+    document.getElementById('igdb-results').style.display = 'none';
+    document.getElementById('igdb-loading').style.display = 'none';
+    document.getElementById('igdb-error').style.display = 'none';
+}
+
+async function searchIGDB() {
+    const searchInput = document.getElementById('igdb-search-input');
+    const query = searchInput.value.trim();
+
+    if (!query) {
+        showIGDBError('Please enter a search term');
+        return;
+    }
+
+    document.getElementById('igdb-loading').style.display = 'block';
+    document.getElementById('igdb-results').style.display = 'none';
+    document.getElementById('igdb-error').style.display = 'none';
+
+    try {
+        const response = await fetch('ajax_igdb.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'action=search_igdb&query=' + encodeURIComponent(query)
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            showIGDBError(data.error);
+        } else if (data.games) {
+            displayIGDBResults(data.games);
+        } else {
+            showIGDBError('Invalid response format from server');
+        }
+    } catch (error) {
+        console.error('IGDB Search Error:', error);
+        showIGDBError('Failed to search IGDB. Please try again.');
+    } finally {
+        document.getElementById('igdb-loading').style.display = 'none';
+    }
+}
+
+function showIGDBError(message) {
+    const errorDiv = document.getElementById('igdb-error');
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+    document.getElementById('igdb-results').style.display = 'none';
+}
+
+function displayIGDBResults(games) {
+    const resultsList = document.getElementById('igdb-results-list');
+    resultsList.innerHTML = '';
+
+    if (games.length === 0) {
+        resultsList.innerHTML = '<p style="text-align: center; color: #666;">No games found. Try a different search term.</p>';
+    } else {
+        games.forEach(game => {
+            const gameDiv = document.createElement('div');
+            gameDiv.className = 'igdb-result';
+            gameDiv.onclick = () => selectIGDBResult(game);
+
+            // Build rating display
+            const ratingDisplay = game.rating ? `<div style="margin-top: 5px; color: #28a745; font-weight: bold;">⭐ ${game.rating}/100 (${game.rating_count || 0} ratings)</div>` : '';
+
+            gameDiv.innerHTML = `
+                <div style="display: flex; align-items: flex-start;">
+                    ${game.cover_url ? `<img src="${game.cover_url}" alt="${game.name}" class="igdb-result-cover" onerror="this.style.display='none'">` : '<div style="width: 80px; height: 80px; background: #ddd; display: flex; align-items: center; justify-content: center; border-radius: 4px; margin-right: 15px; color: #666; font-size: 12px;">No Image</div>'}
+                    <div class="igdb-result-info">
+                        <div class="igdb-result-title">${escapeHtml(game.name || game.title)}</div>
+                        <div class="igdb-result-year">${game.release_year || 'Unknown Year'}</div>
+                        <div class="igdb-result-genres">${(game.genres || []).join(', ') || 'No genres available'}</div>
+                        ${ratingDisplay}
+                        <div style="margin-top: 8px; color: #666; font-size: 14px;">${game.summary ? game.summary.substring(0, 150) + '...' : 'No description available'}</div>
+                    </div>
+                </div>
+                <button class="use-result-btn" onclick="event.stopPropagation(); populateGameData(${game.igdbId || game.id})">Use This Game</button>
+            `;
+
+            resultsList.appendChild(gameDiv);
+        });
+    }
+
+    document.getElementById('igdb-results').style.display = 'block';
+}
+
+function selectIGDBResult(game) {
+    // Toggle selection
+    const allResults = document.querySelectorAll('.igdb-result');
+    allResults.forEach(result => result.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+}
+
+async function populateGameData(igdbId) {
+    try {
+        const response = await fetch('ajax_igdb.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'action=get_igdb_details&id=' + igdbId
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            showIGDBError(data.error);
+            return;
+        }
+
+        // Update form fields
+        const form = document.querySelector(`#edit-form-${currentGameId} form`);
+
+        // Basic fields
+        if (data.title) form.querySelector('input[name="title"]').value = data.title;
+        if (data.slug) form.querySelector('input[name="slug"]').value = data.slug;
+        if (data.release_year) form.querySelector('input[name="r_year"]').value = data.release_year;
+        if (data.genre) form.querySelector('input[name="genre"]').value = data.genre;
+        if (data.subgenre) form.querySelector('input[name="subgenre"]').value = data.subgenre;
+
+        // Checkboxes
+        form.querySelector('input[name="online"]').checked = data.online || false;
+        form.querySelector('input[name="offline"]').checked = data.offline || false;
+
+        // Optional fields
+        if (data.image_url) {
+            form.querySelector('input[name="image_url"]').value = data.image_url;
+        }
+
+        if (data.system_requirements) {
+            form.querySelector('textarea[name="system_requirements"]').value = data.system_requirements;
+        }
+
+        // Close modal
+        closeIGDBModal();
+
+        // Show success message
+        alert('Game data populated from IGDB successfully!');
+    } catch (error) {
+        console.error('IGDB Details Error:', error);
+        showIGDBError('Failed to get game details from IGDB');
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Auto-search when typing (debounced)
+let searchTimeout;
+document.getElementById('igdb-search-input').addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        if (this.value.trim().length >= 3) {
+            searchIGDB();
+        }
+    }, 500);
+});
+</script>
+
+</body></html>

@@ -1,51 +1,58 @@
-# System files
-.DS_Store
-Thumbs.db
-*.log
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Database files (if you want to exclude them from version control)
-# games.db
-# *.sqlite
-
-# Temporary files
-*.tmp
-*.temp
-
-# Cache directories
-cache/
-tmp/
+# Database files
+*.db
+*.db-*
 
 # Environment files
 .env
 .env.local
 .env.production
 
-# Build directories
-build/
-dist/
+# Logs
+*.log
+error.log
+access.log
 
-# Node modules (if using Node.js)
+# Cache files
+cache/
+tmp/
+temp/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Sensitive configuration
+config/local.php
+config/production.php
+
+# Upload directories (if any)
+uploads/
+files/
+
+# Node modules (if any frontend tools added)
 node_modules/
+npm-debug.log*
 
-# PHP cache
-.phpunit.result.cache
-
-# Composer files (if using Composer)
+# Composer (if dependencies added later)
 vendor/
 composer.lock
 
-# Laravel specific
-/storage/app/*
-/storage/framework/cache/*
-/storage/framework/sessions/*
-/storage/framework/testing/*
-/storage/framework/views/*
-/storage/logs/*
-/bootstrap/cache/*
-/public/storage
+# PHP specific
+*.tmp
+.phpunit.cache/
+
+# Development tools
+phpstan.neon
+.php_cs.cache
