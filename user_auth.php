@@ -273,7 +273,7 @@ function getGameById($gameId) {
 
 // Update game information
 function updateGame($gameId, $title, $slug, $p_limit, $p_samepc, $genre, $subgenre, $r_year, $online, $offline, $price = null, $price_url = null, $image_url = null, $system_requirements = null) {
-    global $db;
+    global $db, $dbCache;
 
     try {
         $stmt = $db->prepare("
@@ -282,7 +282,14 @@ function updateGame($gameId, $title, $slug, $p_limit, $p_samepc, $genre, $subgen
             WHERE id = ?
         ");
 
-        return $stmt->execute([$title, $slug, $p_limit, $p_samepc, $genre, $subgenre, $r_year, $online, $offline, $price, $price_url, $image_url, $system_requirements, $gameId]);
+        $result = $stmt->execute([$title, $slug, $p_limit, $p_samepc, $genre, $subgenre, $r_year, $online, $offline, $price, $price_url, $image_url, $system_requirements, $gameId]);
+        
+        // Clear cache when data is modified
+        if ($result) {
+            $dbCache->clear();
+        }
+        
+        return $result;
 
     } catch (PDOException $e) {
         echo "Error updating game: " . $e->getMessage() . "\n";
@@ -292,11 +299,18 @@ function updateGame($gameId, $title, $slug, $p_limit, $p_samepc, $genre, $subgen
 
 // Delete game
 function deleteGame($gameId) {
-    global $db;
+    global $db, $dbCache;
 
     try {
         $stmt = $db->prepare("DELETE FROM games WHERE id = ?");
-        return $stmt->execute([$gameId]);
+        $result = $stmt->execute([$gameId]);
+        
+        // Clear cache when data is modified
+        if ($result) {
+            $dbCache->clear();
+        }
+        
+        return $result;
     } catch (PDOException $e) {
         return false;
     }

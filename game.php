@@ -40,15 +40,17 @@ try {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<title><?php echo h($game['title']); ?> - LAN Game List</title>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="Felix Klastrup, Emvevi">
 	<meta name="description" content="LAN/Multiplayer game info for <?php echo h($game['title']); ?>">
 	<meta property="og:image" content="logo1_icon_100x100.png">
 	<link rel="stylesheet" type="text/css" href="includes/style.css">
 	<script src='recaptcha/api.js'></script>
+	<script src='includes/app.js' defer></script>
 </head>
 <body>
 

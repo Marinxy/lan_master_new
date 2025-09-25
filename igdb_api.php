@@ -11,6 +11,147 @@ class IGDBApi {
     private $clientSecret = '6ws6zjsmy780qmnat14pwekj0fdckr';
     private $accessToken = null;
     private $tokenExpires = null;
+    private $cacheDir = 'cache/igdb/';
+    private $cacheExpiry = 3600; // 1 hour cache
+    
+    /**
+     * Initialize cache directory
+     */
+    private function initCache() {
+        if (!is_dir($this->cacheDir)) {
+            mkdir($this->cacheDir, 0755, true);
+        }
+    }
+    
+    /**
+     * Get cache key for a request
+     */
+    private function getCacheKey($type, $query) {
+        return md5($type . '_' . $query);
+    }
+    
+    /**
+     * Get cached response if available and not expired
+     */
+    private function getCachedResponse($cacheKey) {
+        $this->initCache();
+        $cacheFile = $this->cacheDir . $cacheKey . '.json';
+        
+        if (!file_exists($cacheFile)) {
+            return null;
+        }
+        
+        $cacheData = json_decode(file_get_contents($cacheFile), true);
+        if (!$cacheData || !isset($cacheData['timestamp'], $cacheData['data'])) {
+            return null;
+        }
+        
+        // Check if cache is expired
+        if (time() - $cacheData['timestamp'] > $this->cacheExpiry) {
+            unlink($cacheFile); // Remove expired cache
+            return null;
+        }
+        
+        return $cacheData['data'];
+    }
+    
+    /**
+     * Cache response data
+     */
+    private function cacheResponse($cacheKey, $data) {
+        $this->initCache();
+        $cacheFile = $this->cacheDir . $cacheKey . '.json';
+        
+        $cacheData = [
+            'timestamp' => time(),
+            'data' => $data
+        ];
+        
+        file_put_contents($cacheFile, json_encode($cacheData));
+    }
+    
+    /**
+     * Clear all cached data
+     */
+    public function clearCache() {
+        if (!is_dir($this->cacheDir)) {
+            return true;
+        }
+        
+        $files = glob($this->cacheDir . '*.json');
+        foreach ($files as $file) {
+            unlink($file);
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Clear expired cache entries
+     */
+    public function clearExpiredCache() {
+        if (!is_dir($this->cacheDir)) {
+            return true;
+        }
+        
+        $files = glob($this->cacheDir . '*.json');
+        $cleared = 0;
+        
+        foreach ($files as $file) {
+            $cacheData = json_decode(file_get_contents($file), true);
+            if (!$cacheData || !isset($cacheData['timestamp'])) {
+                unlink($file);
+                $cleared++;
+                continue;
+            }
+            
+            // Check if cache is expired
+            if (time() - $cacheData['timestamp'] > $this->cacheExpiry) {
+                unlink($file);
+                $cleared++;
+            }
+        }
+        
+        return $cleared;
+    }
+    
+    /**
+     * Get cache statistics
+     */
+    public function getCacheStats() {
+        if (!is_dir($this->cacheDir)) {
+            return [
+                'total_files' => 0,
+                'total_size' => 0,
+                'expired_files' => 0
+            ];
+        }
+        
+        $files = glob($this->cacheDir . '*.json');
+        $totalSize = 0;
+        $expiredFiles = 0;
+        
+        foreach ($files as $file) {
+            $totalSize += filesize($file);
+            
+            $cacheData = json_decode(file_get_contents($file), true);
+            if (!$cacheData || !isset($cacheData['timestamp'])) {
+                $expiredFiles++;
+                continue;
+            }
+            
+            if (time() - $cacheData['timestamp'] > $this->cacheExpiry) {
+                $expiredFiles++;
+            }
+        }
+        
+        return [
+            'total_files' => count($files),
+            'total_size' => $totalSize,
+            'expired_files' => $expiredFiles,
+            'cache_dir' => $this->cacheDir
+        ];
+    }
     
     /**
      * Get OAuth2 access token from Twitch
@@ -90,6 +231,15 @@ class IGDBApi {
      * Search for games by name (following IGDB scan spec)
      */
     public function searchGames($query, $limit = 10) {
+        // Create cache key for this search
+        $cacheKey = $this->getCacheKey('search', $query . '_' . $limit);
+        
+        // Try to get cached response first
+        $cachedResponse = $this->getCachedResponse($cacheKey);
+        if ($cachedResponse !== null) {
+            return $cachedResponse;
+        }
+        
         // Search for PC games using the recommended approach
         $searchQuery = 'search "' . addslashes($query) . '"; 
 fields name,slug,summary,first_release_date,cover.url,genres.name,game_modes.name,aggregated_rating,aggregated_rating_count,multiplayer_modes.lancoop,multiplayer_modes.offlinecoop,multiplayer_modes.onlinecoop,multiplayer_modes.offlinemax,rating,rating_count; 
@@ -100,7 +250,9 @@ limit ' . $limit . ';';
             $results = $this->makeRequest('games', $searchQuery);
             
             if (!$results) {
-                return [];
+                $response = [];
+                $this->cacheResponse($cacheKey, $response);
+                return $response;
             }
             
             // Process and format results
@@ -112,10 +264,14 @@ limit ' . $limit . ';';
                 }
             }
             
+            // Cache the successful response
+            $this->cacheResponse($cacheKey, $games);
             return $games;
         } catch (Exception $e) {
             error_log('IGDB Search Error: ' . $e->getMessage());
-            return ['error' => $e->getMessage()];
+            $errorResponse = ['error' => $e->getMessage()];
+            // Don't cache error responses
+            return $errorResponse;
         }
     }
     
@@ -123,6 +279,15 @@ limit ' . $limit . ';';
      * Get detailed game information by ID
      */
     public function getGameDetails($igdbId) {
+        // Create cache key for this game details request
+        $cacheKey = $this->getCacheKey('details', $igdbId);
+        
+        // Try to get cached response first
+        $cachedResponse = $this->getCachedResponse($cacheKey);
+        if ($cachedResponse !== null) {
+            return $cachedResponse;
+        }
+        
         $detailQuery = 'fields name,slug,summary,first_release_date,cover.url,genres.name,game_modes.name,multiplayer_modes.onlinecoop,multiplayer_modes.offlinecoop,multiplayer_modes.lancoop,rating,rating_count,websites.url,websites.category; 
 where id = ' . $igdbId . ';';
         
@@ -130,13 +295,21 @@ where id = ' . $igdbId . ';';
             $results = $this->makeRequest('games', $detailQuery);
             
             if (!$results || count($results) === 0) {
-                return ['error' => 'Game not found'];
+                $errorResponse = ['error' => 'Game not found'];
+                // Don't cache error responses
+                return $errorResponse;
             }
             
-            return $this->processGameData($results[0], true);
+            $gameData = $this->processGameData($results[0], true);
+            
+            // Cache the successful response
+            $this->cacheResponse($cacheKey, $gameData);
+            return $gameData;
         } catch (Exception $e) {
             error_log('IGDB Details Error: ' . $e->getMessage());
-            return ['error' => $e->getMessage()];
+            $errorResponse = ['error' => $e->getMessage()];
+            // Don't cache error responses
+            return $errorResponse;
         }
     }
     

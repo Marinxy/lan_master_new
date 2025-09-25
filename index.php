@@ -93,15 +93,17 @@ $games = getGames($filters, $sort);
 $gameCount = getGameCount();
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<title>LAN Game List - PC Game info for LAN parties and eSports</title>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="Felix Klastrup, Emvevi">
 	<meta name="description" content="All the game info you need to find games for your next multiplayer session, including max players, genres, release years, off- and on-line capabilites and prices for each game.">
 	<meta property="og:image" content="logo1_icon_100x100.png">
 	<link rel="stylesheet" type="text/css" href="includes/style.css">
 	<script src='recaptcha/api.js'></script>
+	<script src='includes/app.js' defer></script>
 </head>
 <body>
 
@@ -344,6 +346,42 @@ $gameCount = getGameCount();
     100% { transform: rotate(360deg); }
 }
 
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* IGDB Modal Improvements */
+#igdb-modal {
+    backdrop-filter: blur(4px);
+}
+
+#igdb-modal > div {
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* IGDB Loading State */
+#igdb-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+#igdb-loading::before {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-color, #007cba);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* IGDB Results */
 .igdb-result {
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -351,16 +389,20 @@ $gameCount = getGameCount();
     margin-bottom: 15px;
     background: #f9f9f9;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
+    position: relative;
 }
 
 .igdb-result:hover {
     background: #e9ecef;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .igdb-result.selected {
     background: #d4edda;
     border-color: #28a745;
+    box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
 }
 
 .igdb-result-cover {
@@ -369,26 +411,38 @@ $gameCount = getGameCount();
     object-fit: cover;
     border-radius: 4px;
     margin-right: 15px;
+    transition: transform 0.2s ease;
+}
+
+.igdb-result:hover .igdb-result-cover {
+    transform: scale(1.05);
 }
 
 .igdb-result-info {
     flex: 1;
+    min-width: 0;
 }
 
 .igdb-result-title {
     font-weight: bold;
     font-size: 18px;
     margin-bottom: 5px;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .igdb-result-year {
     color: #666;
     margin-bottom: 5px;
+    font-size: 14px;
 }
 
 .igdb-result-genres {
     color: #007cba;
     font-size: 14px;
+    margin-bottom: 8px;
 }
 
 .use-result-btn {
@@ -399,6 +453,111 @@ $gameCount = getGameCount();
     border-radius: 4px;
     cursor: pointer;
     margin-top: 10px;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 120px;
+}
+
+.use-result-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.use-result-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    animation: pulse 1.5s infinite;
+}
+
+/* IGDB Search Input */
+#igdb-search-input {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#igdb-search-input:focus {
+    border-color: var(--primary-color, #007cba);
+    box-shadow: 0 0 0 2px rgba(0, 124, 186, 0.2);
+    outline: none;
+}
+
+/* IGDB Error State */
+#igdb-error {
+    border-left: 4px solid #dc3545;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design for IGDB Modal */
+@media (max-width: 768px) {
+    #igdb-modal > div {
+        margin: 10px;
+        max-width: calc(100vw - 20px);
+    }
+    
+    .igdb-result {
+        padding: 12px;
+    }
+    
+    .igdb-result > div {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .igdb-result-cover {
+        margin-right: 0;
+        margin-bottom: 10px;
+        align-self: center;
+    }
+    
+    .igdb-result-title {
+        font-size: 16px;
+        white-space: normal;
+    }
+}
+
+/* Dark mode support for IGDB modal */
+[data-theme="dark"] .igdb-result {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .igdb-result:hover {
+    background: #4a5568;
+}
+
+[data-theme="dark"] .igdb-result.selected {
+    background: #2f855a;
+    border-color: #38a169;
+}
+
+[data-theme="dark"] .igdb-result-title {
+    color: #f7fafc;
+}
+
+[data-theme="dark"] #igdb-search-input {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] #igdb-search-input:focus {
+    border-color: #63b3ed;
+    box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.2);
 }
 </style>
 
@@ -454,6 +613,7 @@ async function searchIGDB() {
         return;
     }
 
+    // Show loading state
     document.getElementById('igdb-loading').style.display = 'block';
     document.getElementById('igdb-results').style.display = 'none';
     document.getElementById('igdb-error').style.display = 'none';
@@ -467,18 +627,37 @@ async function searchIGDB() {
             body: 'action=search_igdb&query=' + encodeURIComponent(query)
         });
 
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
         const data = await response.json();
 
         if (data.error) {
-            showIGDBError(data.error);
+            const errorMessage = data.message || data.error;
+            showIGDBError(errorMessage);
+            if (window.showToast) {
+                window.showToast(`IGDB Search Error: ${errorMessage}`, 'error');
+            }
         } else if (data.games) {
             displayIGDBResults(data.games);
+            if (window.showToast) {
+                window.showToast(`Found ${data.games.length} games from IGDB`, 'success');
+            }
         } else {
-            showIGDBError('Invalid response format from server');
+            const errorMsg = 'Invalid response format from server';
+            showIGDBError(errorMsg);
+            if (window.showToast) {
+                window.showToast(errorMsg, 'error');
+            }
         }
     } catch (error) {
         console.error('IGDB Search Error:', error);
-        showIGDBError('Failed to search IGDB. Please try again.');
+        const errorMsg = 'Failed to search IGDB. Please check your connection and try again.';
+        showIGDBError(errorMsg);
+        if (window.showToast) {
+            window.showToast(errorMsg, 'error');
+        }
     } finally {
         document.getElementById('igdb-loading').style.display = 'none';
     }
@@ -535,6 +714,12 @@ function selectIGDBResult(game) {
 }
 
 async function populateGameData(igdbId) {
+    // Show loading state on the button
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = 'Loading...';
+    button.disabled = true;
+
     try {
         const response = await fetch('ajax_igdb.php', {
             method: 'POST',
@@ -544,44 +729,117 @@ async function populateGameData(igdbId) {
             body: 'action=get_igdb_details&id=' + igdbId
         });
 
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
         const data = await response.json();
 
         if (data.error) {
-            showIGDBError(data.error);
+            const errorMessage = data.message || data.error;
+            showIGDBError(errorMessage);
+            if (window.showToast) {
+                window.showToast(`IGDB Details Error: ${errorMessage}`, 'error');
+            }
             return;
         }
 
         // Update form fields
         const form = document.querySelector(`#edit-form-${currentGameId} form`);
+        
+        if (!form) {
+            throw new Error('Game form not found');
+        }
+
+        let fieldsUpdated = 0;
 
         // Basic fields
-        if (data.title) form.querySelector('input[name="title"]').value = data.title;
-        if (data.slug) form.querySelector('input[name="slug"]').value = data.slug;
-        if (data.release_year) form.querySelector('input[name="r_year"]').value = data.release_year;
-        if (data.genre) form.querySelector('input[name="genre"]').value = data.genre;
-        if (data.subgenre) form.querySelector('input[name="subgenre"]').value = data.subgenre;
+        if (data.title) {
+            const titleField = form.querySelector('input[name="title"]');
+            if (titleField) {
+                titleField.value = data.title;
+                fieldsUpdated++;
+            }
+        }
+        if (data.slug) {
+            const slugField = form.querySelector('input[name="slug"]');
+            if (slugField) {
+                slugField.value = data.slug;
+                fieldsUpdated++;
+            }
+        }
+        if (data.release_year) {
+            const yearField = form.querySelector('input[name="r_year"]');
+            if (yearField) {
+                yearField.value = data.release_year;
+                fieldsUpdated++;
+            }
+        }
+        if (data.genre) {
+            const genreField = form.querySelector('input[name="genre"]');
+            if (genreField) {
+                genreField.value = data.genre;
+                fieldsUpdated++;
+            }
+        }
+        if (data.subgenre) {
+            const subgenreField = form.querySelector('input[name="subgenre"]');
+            if (subgenreField) {
+                subgenreField.value = data.subgenre;
+                fieldsUpdated++;
+            }
+        }
 
         // Checkboxes
-        form.querySelector('input[name="online"]').checked = data.online || false;
-        form.querySelector('input[name="offline"]').checked = data.offline || false;
+        const onlineField = form.querySelector('input[name="online"]');
+        const offlineField = form.querySelector('input[name="offline"]');
+        if (onlineField) {
+            onlineField.checked = data.online || false;
+            fieldsUpdated++;
+        }
+        if (offlineField) {
+            offlineField.checked = data.offline || false;
+            fieldsUpdated++;
+        }
 
         // Optional fields
         if (data.image_url) {
-            form.querySelector('input[name="image_url"]').value = data.image_url;
+            const imageField = form.querySelector('input[name="image_url"]');
+            if (imageField) {
+                imageField.value = data.image_url;
+                fieldsUpdated++;
+            }
         }
 
         if (data.system_requirements) {
-            form.querySelector('textarea[name="system_requirements"]').value = data.system_requirements;
+            const reqField = form.querySelector('textarea[name="system_requirements"]');
+            if (reqField) {
+                reqField.value = data.system_requirements;
+                fieldsUpdated++;
+            }
         }
 
         // Close modal
         closeIGDBModal();
 
         // Show success message
-        alert('Game data populated from IGDB successfully!');
+        const successMsg = `Game data populated successfully! Updated ${fieldsUpdated} fields.`;
+        if (window.showToast) {
+            window.showToast(successMsg, 'success');
+        } else {
+            alert(successMsg);
+        }
     } catch (error) {
         console.error('IGDB Details Error:', error);
-        showIGDBError('Failed to get game details from IGDB');
+        const errorMsg = 'Failed to get game details from IGDB. Please try again.';
+        showIGDBError(errorMsg);
+        if (window.showToast) {
+            window.showToast(errorMsg, 'error');
+        }
+    } finally {
+        // Restore button state
+        button.textContent = originalText;
+        button.disabled = false;
     }
 }
 

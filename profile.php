@@ -67,15 +67,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>My Profile - LAN Game List</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="LAN Game List">
     <meta name="description" content="User profile page">
     <meta property="og:image" content="logo1_icon_100x100.png">
     <link rel="stylesheet" type="text/css" href="includes/style.css">
     <script src='recaptcha/api.js'></script>
+    <script src='includes/app.js' defer></script>
 </head>
 <body>
 
